@@ -225,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode,resultCode,data);
         String nombreObtenido = result.getContents();
 
-        Log.d(ETIQUETA_LOG, "Datos obtenidos:" + nombreObtenido);
+        Log.d(ETIQUETA_LOG, "Datos de QR obtenidos:" + nombreObtenido);
 
         //vamos a guardar este valor obtenido en la cache de la app
         guardarEnCache(nombreObtenido);

@@ -8,6 +8,7 @@ import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
@@ -41,12 +42,17 @@ public class ServicioReceptorBeacons extends Service {
         Toast.makeText(this,"Servicio arrancado "+ idArranque,
                 Toast.LENGTH_SHORT).show();
         MainActivity.BluetoothLeScannerWrapper scannerWrapper = (MainActivity.BluetoothLeScannerWrapper) intent.getSerializableExtra("escaner");
+
+        //hay que modificar el primer valor de la siguiente linea si guardamos el valor del nommbre en otra actividad que no sea MainActivity, consultar funcion de guardado para ruta del archivo a buscar
+        SharedPreferences shrdPrefs = getSharedPreferences("MainActivity", MODE_PRIVATE);
+        String nombreDispositivo = shrdPrefs.getString("NombreDispositivo", "GTI-3A");
+
         elEscanner = MainActivity.BluetoothLeScannerWrapper.getBluetoothLeScanner();
         Log.d("Pasar dato", " Recibe el servicio: " + elEscanner.hashCode());
         new Thread(new Runnable() {
             @Override
             public void run() {
-                ServicioReceptorBeacons.this.buscarEsteDispositivoBTLE("GTI-3A");
+                ServicioReceptorBeacons.this.buscarEsteDispositivoBTLE(nombreDispositivo);
             }
         }).start();
         return START_STICKY;
