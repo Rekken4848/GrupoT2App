@@ -14,4 +14,17 @@
         android:onClick="botonBuscarSensor"
         android:text="Buscar nuestro dispositivo  BTLE" />
 
+    <Button
+        android:id="@+id/vincularqr"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="abrirEscaneoQr"
+        android:text="Vincular dispositivo" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Nombre dispositivo: GTI-3A" />
+
 </android.widget.LinearLayout>

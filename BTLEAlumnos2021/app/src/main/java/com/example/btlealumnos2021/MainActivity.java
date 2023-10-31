@@ -15,9 +15,13 @@ import android.os.ParcelUuid;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -43,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
     private BluetoothLeScanner elEscanner;
 
     Button boton;
+    Button botonEscaner;
+    TextView textoNombre;
 
     public static class BluetoothLeScannerWrapper {
         private static BluetoothLeScanner elEscannerEstatico;
@@ -145,6 +151,8 @@ public class MainActivity extends AppCompatActivity {
         Log.d(ETIQUETA_LOG, " onCreate(): empieza ");
 
         boton = findViewById(R.id.botonBuscarSensor);
+        botonEscaner =findViewById(R.id.vincularqr);
+        textoNombre=findViewById(R.id.textView);
 
         boton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -186,6 +194,30 @@ public class MainActivity extends AppCompatActivity {
         // permissions this app might request.
     } // ()
 
+    // --------------------------------------------------------------
+    // --------------------------------------------------------------
+    public void abrirEscaneoQr(View view){
+        Log.d(ETIQUETA_LOG, " boton vincular sensor con qr Pulsado");
+        Log.d(ETIQUETA_LOG, " Empezamos escaneo de qr con camara");
+
+        //abrimos la camara con la libreria de escaneo de qr zxing
+        new IntentIntegrator(this).initiateScan();
+        //la respuesta del escaneo se obtiene en onActivityResult
+
+    } // ()
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        //Log.d(ETIQUETA_LOG, "requestCode: " + String.valueOf(requestCode));
+        //obtenemos en un string el resultado del escaneo de qr
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode,resultCode,data);
+        String nombreObtenido = result.getContents();
+
+        Log.d(ETIQUETA_LOG, "Datos obtenidos:" + nombreObtenido);
+
+    }
 } // class
 // --------------------------------------------------------------
 // --------------------------------------------------------------
