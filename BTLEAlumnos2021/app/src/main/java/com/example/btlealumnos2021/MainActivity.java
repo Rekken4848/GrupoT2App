@@ -8,7 +8,9 @@ import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.ParcelUuid;
@@ -165,6 +167,11 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d(ETIQUETA_LOG, " onCreate(): termina ");
 
+        //para este sprint mostramos el dato guardado  en el textview para comprobar que funciona
+        SharedPreferences shrdPrefs = getPreferences(MODE_PRIVATE);
+        String valorAMostrar = shrdPrefs.getString("NombreDispositivo", "GTI-3A");
+        textoNombre.setText(valorAMostrar);
+
     } // onCreate()
 
     // --------------------------------------------------------------
@@ -206,6 +213,9 @@ public class MainActivity extends AppCompatActivity {
 
     } // ()
 
+    // --------------------------------------------------------------
+    // N, Lista<Texto>, Lista<N> --> onRequestPermissionsResult()
+    // --------------------------------------------------------------
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -217,7 +227,30 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d(ETIQUETA_LOG, "Datos obtenidos:" + nombreObtenido);
 
-    }
+        //vamos a guardar este valor obtenido en la cache de la app
+        guardarEnCache(nombreObtenido);
+
+    } // ()
+
+    // --------------------------------------------------------------
+    // String --> guardarEnCache()
+    // --------------------------------------------------------------
+    public void guardarEnCache(String valor){
+
+        SharedPreferences shrdPrefs = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor editor = shrdPrefs.edit();
+        //crea un archivo xml donde almacena el dato en la ubicacion:
+        //data/com.example.btlealumnos2021/shared_prefs
+        editor.putString("NombreDispositivo", valor);
+        editor.commit();
+
+        //para este sprint mostramos el dato guardado  en el textview para comprobar que funciona
+        String valorAMostrar = shrdPrefs.getString("NombreDispositivo", "GTI-3A");
+        textoNombre.setText(valorAMostrar);
+
+    } // ()
+
+
 } // class
 // --------------------------------------------------------------
 // --------------------------------------------------------------
