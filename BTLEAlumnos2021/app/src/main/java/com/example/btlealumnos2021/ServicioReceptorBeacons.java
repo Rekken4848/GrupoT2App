@@ -1,7 +1,5 @@
 package com.example.btlealumnos2021;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.Service;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.le.BluetoothLeScanner;
@@ -11,18 +9,18 @@ import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.core.app.NotificationCompat;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 // -----------------------------------------------------------------------------------
 // @author: Hugo Martin Escrihuela
@@ -34,11 +32,40 @@ public class ServicioReceptorBeacons extends Service {
 
     private ScanCallback callbackDelEscaneo = null;
 
+    private SharedPreferences shrdPrefs;
+
     @Override
     public void onCreate() {
         super.onCreate();
         Toast.makeText(this,"Servicio creado",
                 Toast.LENGTH_SHORT).show();
+
+        //hay que modificar el primer valor de la siguiente linea si guardamos el valor del nommbre en otra actividad que no sea MainActivity, consultar funcion de guardado para ruta del archivo a buscar
+        shrdPrefs = getSharedPreferences("MainActivity", MODE_PRIVATE);
+
+        Timer timer= new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                long fechaUltimaMedicion = shrdPrefs.getLong("UltimaFechaMedicion", 0);
+                long fechaActual = System.currentTimeMillis();
+
+                if (fechaUltimaMedicion==0){
+                    return;
+                }
+                long diferencia = fechaActual - fechaUltimaMedicion;
+
+                // 1 hora = 3600000 milisegundos
+                // 30 minutos = 1800000 milisegundos
+                // 1 minuto = 60000 milisegundos
+                // 2 minutos = 120000 milisegundos
+                // 1 hora y media = 5400000 milisegundos
+                // 1 dia (24 horas) = 86400000 milisegundos
+                if (diferencia > 120000){
+                    notificacionAlerta(0, 2);
+                }
+            }
+        }, 120000);
     }
 
     @Override
@@ -47,8 +74,6 @@ public class ServicioReceptorBeacons extends Service {
                 Toast.LENGTH_SHORT).show();
         MainActivity.BluetoothLeScannerWrapper scannerWrapper = (MainActivity.BluetoothLeScannerWrapper) intent.getSerializableExtra("escaner");
 
-        //hay que modificar el primer valor de la siguiente linea si guardamos el valor del nommbre en otra actividad que no sea MainActivity, consultar funcion de guardado para ruta del archivo a buscar
-        SharedPreferences shrdPrefs = getSharedPreferences("MainActivity", MODE_PRIVATE);
         String nombreDispositivo = shrdPrefs.getString("NombreDispositivo", "GTI-3A");
 
         elEscanner = MainActivity.BluetoothLeScannerWrapper.getBluetoothLeScanner();
@@ -94,6 +119,7 @@ public class ServicioReceptorBeacons extends Service {
             public void onScanResult(int callbackType, ScanResult resultado) {
                 super.onScanResult(callbackType, resultado);
                 Log.d(ETIQUETA_LOG, " buscarTodosLosDispositivosBTL(): onScanResult() ");
+
 
                 mostrarInformacionDispositivoBTLE(resultado);
             }
@@ -194,6 +220,13 @@ public class ServicioReceptorBeacons extends Service {
 
         compararConMedidasOficiales(tipoValor, valorMedicion);
 
+        SharedPreferences.Editor editor = shrdPrefs.edit();
+        //crea un archivo xml donde almacena el dato en la ubicacion:
+        //data/com.example.btlealumnos2021/shared_prefs
+        //el valor que guardamos es la fecha y hora actuales en milisegundos
+        editor.putLong("UltimaFechaMedicion", System.currentTimeMillis());
+        editor.commit();
+
     } // ()
 
     // --------------------------------------------------------------
@@ -245,6 +278,7 @@ public class ServicioReceptorBeacons extends Service {
     } // ()
 
     private void compararConMedidasOficiales(float tipoValorfloat, float valorMedicionfloat){
+        int tipoNotif = 1;
         int tipoValor = (int) tipoValorfloat;
         int valorMedicion = (int) valorMedicionfloat;
 
@@ -252,35 +286,38 @@ public class ServicioReceptorBeacons extends Service {
             case 0:
                 break;
             case 1: //ozono
-                if(valorMedicionfloat>240){
-                    notificacionExcesoLimite(tipoValor);
+                if(valorMedicion>240){
+                    notificacionAlerta(tipoValor, tipoNotif);
                 }
                 break;
             case 2: //NO2
-                if(valorMedicionfloat>200){
-                    notificacionExcesoLimite(tipoValor);
+                if(valorMedicion>200){
+                    notificacionAlerta(tipoValor, tipoNotif);
                 }
                 break;
             case 3: //SO2
-                if(valorMedicionfloat>350){
-                    notificacionExcesoLimite(tipoValor);
+                if(valorMedicion>350){
+                    notificacionAlerta(tipoValor, tipoNotif);
                 }
                 break;
             case 4: //CO (en mg)
-                if(valorMedicionfloat>10){
-                    notificacionExcesoLimite(tipoValor);
+                if(valorMedicion>10){
+                    notificacionAlerta(tipoValor, tipoNotif);
                 }
                 break;
             case 5: // Benceno
-                if(valorMedicionfloat>5){
-                    notificacionExcesoLimite(tipoValor);
+                if(valorMedicion>5){
+                    notificacionAlerta(tipoValor, tipoNotif);
                 }
                 break;
         }
     }
-    public void notificacionExcesoLimite(int tipoDato){
+    public void notificacionAlerta(int tipoDato, int tipoNotificacion){
+        //tipo notificacion:
+        // 1 = se ha recibido un valor que excede las recomendaciones oficiales
+        // 2 = el timer no detecta un beacon desde hace mas de x tiempo, notificacion de alerta de posible fallo de dispositivo
         Intent i = new Intent(ServicioReceptorBeacons.this, ServicioNotifAlerta.class);
-        i.putExtra("tipoNotif", 1);
+        i.putExtra("tipoNotif", tipoNotificacion);
         i.putExtra("tipoDato", tipoDato);
         startService(i);
     }

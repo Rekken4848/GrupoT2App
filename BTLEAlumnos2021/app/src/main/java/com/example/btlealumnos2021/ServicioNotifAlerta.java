@@ -30,8 +30,8 @@ public class ServicioNotifAlerta extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int idArranque) {
 
-        String TituloDato="O3";
-        String DescDato="ozono";
+        String TituloDato="";
+        String DescDato="";
 
         int tipoDato = (int) intent.getSerializableExtra("tipoDato");
 
@@ -61,16 +61,17 @@ public class ServicioNotifAlerta extends Service {
         }
         int tipoNotif = (int) intent.getSerializableExtra("tipoNotif");
 
+        notificationManager = (NotificationManager)
+                getSystemService(NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel notificationChannel = new NotificationChannel(
+                    CANAL_ID, "Mis Notificaciones",
+                    NotificationManager.IMPORTANCE_DEFAULT);
+            notificationChannel.setDescription("Descripcion del canal");
+            notificationManager.createNotificationChannel(notificationChannel);
+        }
+
         if (tipoNotif == 1){ //es alerta por limite
-            notificationManager = (NotificationManager)
-                    getSystemService(NOTIFICATION_SERVICE);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                NotificationChannel notificationChannel = new NotificationChannel(
-                        CANAL_ID, "Mis Notificaciones",
-                        NotificationManager.IMPORTANCE_DEFAULT);
-                notificationChannel.setDescription("Descripcion del canal");
-                notificationManager.createNotificationChannel(notificationChannel);
-            }
             NotificationCompat.Builder notificacion =
                     new NotificationCompat.Builder(this, CANAL_ID)
                             .setSmallIcon(android.R.drawable.ic_popup_reminder)
@@ -82,6 +83,19 @@ public class ServicioNotifAlerta extends Service {
 
             //startForeground(NOTIFICACION_ID, notificacion.build());
 
+            notificationManager.notify(NOTIFICACION_ID, notificacion.build());
+
+        } else if (tipoNotif == 2){ //es alerta por posible error de sensor
+            NotificationCompat.Builder notificacion =
+                    new NotificationCompat.Builder(this, CANAL_ID)
+                            .setSmallIcon(android.R.drawable.ic_popup_reminder)
+                            .setContentTitle("Sonda desconectada")
+                            .setContentText("No se detecta la sonda")
+                            .setStyle(new NotificationCompat.BigTextStyle()
+                                    .bigText("No estamos detectando tu sonda, podria ser que no hayas vinculado tu sonda, que la sonda este estropeada o que la bateria este agotada o este dando problemas. Por favor ponte en contacto con un administrador para solucionar este problema"))
+                            .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+            //startForeground(NOTIFICACION_ID, notificacion.build());
 
             notificationManager.notify(NOTIFICACION_ID, notificacion.build());
         }
