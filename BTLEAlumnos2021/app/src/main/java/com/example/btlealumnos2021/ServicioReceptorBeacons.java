@@ -1,5 +1,7 @@
 package com.example.btlealumnos2021;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.Service;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.le.BluetoothLeScanner;
@@ -9,11 +11,13 @@ import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -135,7 +139,7 @@ public class ServicioReceptorBeacons extends Service {
         int rssi = resultado.getRssi();
 
         Log.d(ETIQUETA_LOG, " ****************************************************");
-        Log.d(ETIQUETA_LOG, " ****** DISPOSITIVO DETECTADO BTLE ****************** ");
+        Log.d(ETIQUETA_LOG, " ****** DISPOSITIVO DETECTADO BTLE ******************");
         Log.d(ETIQUETA_LOG, " ****************************************************");
         /*if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -182,11 +186,14 @@ public class ServicioReceptorBeacons extends Service {
         Log.d(ETIQUETA_LOG, " txPower  = " + Integer.toHexString(tib.getTxPower()) + " ( " + tib.getTxPower() + " )");
         Log.d(ETIQUETA_LOG, " ****************************************************");
 
-        float Vgas = (float) Utilidades.bytesToInt(tib.getMajor());
-        float Vtemp = (float) Utilidades.bytesToInt(tib.getMinor());
+        float tipoValor = (float) Utilidades.bytesToInt(tib.getMajor());
+        float valorMedicion = (float) Utilidades.bytesToInt(tib.getMinor());
 
-        POSTinsertarMedicion((Vgas)/100, (Vtemp)/100, bluetoothDevice.getAddress());
+        //POSTinsertarMedicion((Vgas)/100, (Vtemp)/100, bluetoothDevice.getAddress());
         //POSTinsertarMedicion(Float.parseFloat(Utilidades.bytesToHexString(tib.getMajor())), Float.parseFloat(Utilidades.bytesToHexString(tib.getMinor())));
+
+        compararConMedidasOficiales(tipoValor, valorMedicion);
+
     } // ()
 
     // --------------------------------------------------------------
@@ -237,6 +244,46 @@ public class ServicioReceptorBeacons extends Service {
         //this.elEscanner.startScan(this.callbackDelEscaneo);
     } // ()
 
+    private void compararConMedidasOficiales(float tipoValorfloat, float valorMedicionfloat){
+        int tipoValor = (int) tipoValorfloat;
+        int valorMedicion = (int) valorMedicionfloat;
+
+        switch (tipoValor){
+            case 0:
+                break;
+            case 1: //ozono
+                if(valorMedicionfloat>240){
+                    notificacionExcesoLimite(tipoValor);
+                }
+                break;
+            case 2: //NO2
+                if(valorMedicionfloat>200){
+                    notificacionExcesoLimite(tipoValor);
+                }
+                break;
+            case 3: //SO2
+                if(valorMedicionfloat>350){
+                    notificacionExcesoLimite(tipoValor);
+                }
+                break;
+            case 4: //CO (en mg)
+                if(valorMedicionfloat>10){
+                    notificacionExcesoLimite(tipoValor);
+                }
+                break;
+            case 5: // Benceno
+                if(valorMedicionfloat>5){
+                    notificacionExcesoLimite(tipoValor);
+                }
+                break;
+        }
+    }
+    public void notificacionExcesoLimite(int tipoDato){
+        Intent i = new Intent(ServicioReceptorBeacons.this, ServicioNotifAlerta.class);
+        i.putExtra("tipoNotif", 1);
+        i.putExtra("tipoDato", tipoDato);
+        startService(i);
+    }
     // --------------------------------------------------------------
     // detenerBusquedaDispositivosBTLE()
     // --------------------------------------------------------------
