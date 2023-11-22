@@ -45,4 +45,6 @@ dependencies {
 
     implementation 'androidx.navigation:navigation-runtime:2.7.5'
     implementation 'androidx.navigation:navigation-ui:2.7.5'
+
+    implementation 'com.google.code.gson:gson:2.8.9'
 }
