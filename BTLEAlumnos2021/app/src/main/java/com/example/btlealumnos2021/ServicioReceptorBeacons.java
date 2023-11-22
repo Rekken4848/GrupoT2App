@@ -14,6 +14,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -218,6 +219,8 @@ public class ServicioReceptorBeacons extends Service {
         //POSTinsertarMedicion((Vgas)/100, (Vtemp)/100, bluetoothDevice.getAddress());
         //POSTinsertarMedicion(Float.parseFloat(Utilidades.bytesToHexString(tib.getMajor())), Float.parseFloat(Utilidades.bytesToHexString(tib.getMinor())));
 
+        distanciaASonda(rssi * -1);
+
         compararConMedidasOficiales(tipoValor, valorMedicion);
 
         SharedPreferences.Editor editor = shrdPrefs.edit();
@@ -276,6 +279,36 @@ public class ServicioReceptorBeacons extends Service {
 
         //this.elEscanner.startScan(this.callbackDelEscaneo);
     } // ()
+
+    private void cambiarTexto(String nuevoTexto) {
+        // Realiza alguna lógica de cambio de texto aquí si es necesario
+        notifyTextChange(nuevoTexto);
+    }
+
+    private void notifyTextChange(String newText) {
+        Log.d("Distancia2", "Potencia: ");
+        Intent intent = new Intent("actualizarTexto");
+        intent.putExtra("nuevoTexto", newText);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
+
+    private void distanciaASonda(int potencia){
+        Log.d("Distancia", "Potencia: " + potencia);
+        if (potencia > 0 && potencia < 50) {
+            cambiarTexto("Cerca");
+            // Obtén el tiempo en milisegundos que deseas para la alarma
+            long tiempoEnMilisegundos = 6000; // Ejemplo: 1 s
+
+            // Configura la alarma desde el servicio
+            AlarmaHelper.configurarAlarma(this, tiempoEnMilisegundos);
+        } else if (potencia > 50 && potencia < 70) {
+            cambiarTexto("Medio");
+        } else if (potencia > 70 && potencia < 85) {
+            cambiarTexto("Lejos");
+        } else if (potencia > 85) {
+            cambiarTexto("Muy lejos");
+        }
+    }
 
     private void compararConMedidasOficiales(float tipoValorfloat, float valorMedicionfloat){
         int tipoNotif = 1;

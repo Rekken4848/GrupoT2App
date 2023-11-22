@@ -8,12 +8,17 @@ import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.os.ParcelUuid;
 import android.util.JsonReader;
 import android.util.Log;
@@ -30,6 +35,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -47,8 +53,21 @@ import java.util.UUID;
 // -----------------------------------------------------------------------------------
 // @author: Hugo Martin Escrihuela
 // -----------------------------------------------------------------------------------
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements TextChangeListener {
 
+    private BroadcastReceiver broadcastReceiver;
+    // Método de la interfaz TextChangeListener para actualizar el texto en la actividad
+    @Override
+    public void onTextChange(String newText) {
+        distancia_texto.setText(newText);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Desregistra el receptor de difusión al destruir la actividad
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
+    }
     // --------------------------------------------------------------
     // --------------------------------------------------------------
     private static final String ETIQUETA_LOG = ">>>>";
@@ -66,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
     TextView valorCO2;
     TextView valorTemperatura;
 
+    TextView distancia_texto;
     public static class BluetoothLeScannerWrapper {
         private static BluetoothLeScanner elEscannerEstatico;
 
@@ -84,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
 
     // --------------------------------------------------------------
     // --------------------------------------------------------------
-    public void botonBuscarSensor() {
+    public void botonBuscarSensor(View v) {
         Log.d(ETIQUETA_LOG, " boton buscar Sensor Pulsado");
         Log.d("Pasar dato", " Enviar el servicio: " + elEscanner.hashCode());
         /*Gson gson = new Gson();
@@ -97,6 +117,17 @@ public class MainActivity extends AppCompatActivity {
 
         // Iniciar el servicio con el Intent que contiene datos
         startService(i);
+        // Registra el receptor de difusión
+        broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if ("actualizarTexto".equals(intent.getAction())) {
+                    String nuevoTexto = intent.getStringExtra("nuevoTexto");
+                    onTextChange(nuevoTexto);
+                }
+            }
+        };
+        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, new IntentFilter("actualizarTexto"));
     } // ()
 
     // --------------------------------------------------------------
@@ -166,11 +197,12 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d(ETIQUETA_LOG, " onCreate(): empieza ");
 
-        //boton = findViewById(R.id.botonBuscarSensor);
-        //botonEscaner =findViewById(R.id.vincularqr);
-        //textoNombre=findViewById(R.id.textView);
-        /*
-        boton.setOnClickListener(new View.OnClickListener() {
+        /*boton = findViewById(R.id.botonBuscarSensor);
+        botonEscaner =findViewById(R.id.vincularqr);
+        textoNombre=findViewById(R.id.textView);*/
+        distancia_texto=findViewById(R.id.singlastrength);
+
+        /*boton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 botonBuscarSensor();
@@ -445,7 +477,7 @@ public class MainActivity extends AppCompatActivity {
 
         //para este sprint mostramos el dato guardado  en el textview para comprobar que funciona
         String valorAMostrar = shrdPrefs.getString("NombreDispositivo", "GTI-3A");
-        textoNombre.setText(valorAMostrar);
+        //textoNombre.setText(valorAMostrar);
 
     } // ()
 
