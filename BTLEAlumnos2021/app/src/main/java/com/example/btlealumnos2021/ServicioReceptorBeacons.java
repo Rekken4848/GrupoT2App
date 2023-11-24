@@ -71,8 +71,8 @@ public class ServicioReceptorBeacons extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int idArranque) {
-        Toast.makeText(this,"Servicio arrancado "+ idArranque,
-                Toast.LENGTH_SHORT).show();
+        /*Toast.makeText(this,"Servicio arrancado "+ idArranque,
+                Toast.LENGTH_SHORT).show();*/
         MainActivity.BluetoothLeScannerWrapper scannerWrapper = (MainActivity.BluetoothLeScannerWrapper) intent.getSerializableExtra("escaner");
 
         String nombreDispositivo = shrdPrefs.getString("NombreDispositivo", "GTI-3A");

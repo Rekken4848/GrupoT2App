@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -229,6 +230,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //SharedPreferences shrdPrefs = getPreferences(MODE_PRIVATE);
         //String valorAMostrar = shrdPrefs.getString("NombreDispositivo", "GTI-3A");
         //textoNombre.setText(valorAMostrar);
+        SharedPreferences shrdPrefs = getPreferences(MODE_PRIVATE);
+        String nombreDispositivo = shrdPrefs.getString("NombreDispositivo", "GTI-3A");
+        /*SharedPreferences shrdPrefs;
+                String nombreDispositivo;
+                try {
+                    shrdPrefs = getActivity().getPreferences(MODE_PRIVATE);
+                    Log.d( "Sprint2", shrdPrefs.toString());
+                    nombreDispositivo = shrdPrefs.getString("NombreDispositivo", "GTI-3A");
+                } catch(Exception error1) {
+                    Log.e("Sprint2", error1.toString());
+                }*/
 
         Log.d(ETIQUETA_LOG, " onCreate(): termina ");
     } // onCreate()
@@ -258,30 +270,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         // Other 'case' lines to check for other
         // permissions this app might request.
-    } // ()
-
-
-
-    TextView textoNombre;
-    //textoNombre=findViewById(R.id.textView);
-
-
-
-
-    private void probarEnviarGET_Otra() {
-        PeticionarioREST elPeticionario = new PeticionarioREST();
-
-        //movil diego en wifi residencia 192.168.87.206
-        //pc diego en wifi residencia 192.168.85.210
-        elPeticionario.hacerPeticionREST("GET",  "http://192.168.85.210:8080/medicionEntreFechasTipoYDispositivo" + "/" + "2023-10-15 01:00:00" + "/" + "2023-10-15 23:59:59" + "/" + 1 + "/" + "FFFFFFFFFF", null,
-                new PeticionarioREST.RespuestaREST () {
-                    @Override
-                    public void callback(int codigo, String cuerpo) {
-                        Log.d( "pruebasPeticionario", "codigo = " + codigo + "\n" + cuerpo);
-                    }
-                }
-        );
-
     } // ()
 } // class
 // --------------------------------------------------------------

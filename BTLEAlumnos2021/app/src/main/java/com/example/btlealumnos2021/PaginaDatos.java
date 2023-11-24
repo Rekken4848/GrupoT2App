@@ -32,6 +32,7 @@ public class PaginaDatos extends Fragment {
     TextView valorOzono;
     TextView valorCO2;
     TextView valorTemperatura;
+    private SharedPreferences shrdPrefs;
     private static final String ETIQUETA_LOG = ">>>>";
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,8 +53,17 @@ public class PaginaDatos extends Fragment {
             @Override
             public void run() {
                 PeticionarioREST elPeticionario = new PeticionarioREST();
+                /*SharedPreferences shrdPrefs;
+                String nombreDispositivo;
+                try {
+                    shrdPrefs = getActivity().getPreferences(MODE_PRIVATE);
+                    Log.d( "Sprint2", shrdPrefs.toString());
+                    nombreDispositivo = shrdPrefs.getString("NombreDispositivo", "GTI-3A");
+                } catch(Exception error1) {
+                    Log.e("Sprint2", error1.toString());
+                }*/
 
-                SharedPreferences shrdPrefs = getActivity().getPreferences(MODE_PRIVATE);
+                shrdPrefs = getActivity().getSharedPreferences("MainActivity", MODE_PRIVATE);
                 String nombreDispositivo = shrdPrefs.getString("NombreDispositivo", "GTI-3A");
 
                 long fechaActualMilis = System.currentTimeMillis();
@@ -62,10 +72,12 @@ public class PaginaDatos extends Fragment {
                 String fechaActualString = new Date(fechaActualMilis).toString();
                 String fechaDesdeString = new Date(fechaDesdeMilis).toString();
 
+                //IP movil http://192.168.43.252:8080/
+                //IP casa http://192.168.1.21:8080/
                 //movil diego en wifi residencia 192.168.87.206
                 //pc diego en wifi residencia 192.168.85.210
                 //url de prueba = "http://192.168.85.210:8080/medicionEntreFechasYDispositivo" + "/" + "2023-10-15 01:00:00" + "/" + "2023-10-15 23:59:59"  + "/" + "FFFFFFFFFF"
-                elPeticionario.hacerPeticionREST("GET",  "http://192.168.85.210:8080/medicionEntreFechasYDispositivo" + "/" + fechaDesdeString + "/" + fechaActualString  + "/" + nombreDispositivo, null,
+                elPeticionario.hacerPeticionREST("GET",  "http://192.168.43.252:8080/medicionEntreFechasYDispositivo" + "/" + fechaDesdeString + "/" + fechaActualString  + "/" + nombreDispositivo, null,
                         new PeticionarioREST.RespuestaREST () {
                             @Override
                             public void callback(int codigo, String cuerpo) {
@@ -81,63 +93,68 @@ public class PaginaDatos extends Fragment {
                                 int contadorTemp=0;
                                 int contadorOzono=0;
                                 int contadorCO2=0;
-                                for (POJOMedicion MedicionObjeto : listaMediciones) {
-                                    System.out.println("ID: " + MedicionObjeto.getId());
-                                    System.out.println("Valor: " + MedicionObjeto.getValor());
-                                    System.out.println("Tipo_Valor: " + MedicionObjeto.getTipo_valor_id());
-                                    System.out.println("Fecha: " + MedicionObjeto.getFecha());
-                                    System.out.println("Lugar: " + MedicionObjeto.getLugar());
-                                    System.out.println("------");
+                                try{
+                                    for (POJOMedicion MedicionObjeto : listaMediciones) {
+                                        System.out.println("ID: " + MedicionObjeto.getId());
+                                        System.out.println("Valor: " + MedicionObjeto.getValor());
+                                        System.out.println("Tipo_Valor: " + MedicionObjeto.getTipo_valor_id());
+                                        System.out.println("Fecha: " + MedicionObjeto.getFecha());
+                                        System.out.println("Lugar: " + MedicionObjeto.getLugar());
+                                        System.out.println("------");
 
-                                    float esteValor = MedicionObjeto.getValor();
+                                        float esteValor = MedicionObjeto.getValor();
 
-                                    switch (MedicionObjeto.getTipo_valor_id()){
-                                        case 0: //caso temperatura
-                                            valorFinalTemp=valorFinalTemp+esteValor;
-                                            contadorTemp++;
-                                            break;
+                                        switch (MedicionObjeto.getTipo_valor_id()){
+                                            case 0: //caso temperatura
+                                                valorFinalTemp=valorFinalTemp+esteValor;
+                                                contadorTemp++;
+                                                break;
 
-                                        case 1: //caso ozono
-                                            valorFinalOzono=valorFinalOzono+esteValor;
-                                            contadorOzono++;
-                                            break;
+                                            case 1: //caso ozono
+                                                valorFinalOzono=valorFinalOzono+esteValor;
+                                                contadorOzono++;
+                                                break;
 
-                                        case 6: //caso CO2
-                                            valorFinalCO2=valorFinalCO2+esteValor;
-                                            contadorCO2++;
-                                            break;
+                                            case 6: //caso CO2
+                                                valorFinalCO2=valorFinalCO2+esteValor;
+                                                contadorCO2++;
+                                                break;
+                                        }
+
                                     }
 
+                                    if (contadorTemp!=0){
+                                        float valorMedioTemp = valorFinalTemp/contadorTemp;
+                                        System.out.println("Temperatura" + valorMedioTemp);
+                                        compararConMedidasOficiales(0, valorMedioTemp);
+                                    } else{
+                                        compararConMedidasOficiales(0, -999); //ponemos un valor imposible para decirle a la funcion que de este valor no tenemos mediciones
+                                    }
+
+                                    if (contadorOzono!=0){
+                                        float valorMedioOzono = valorFinalOzono/contadorOzono;
+                                        System.out.println("Ozono" + valorMedioOzono);
+                                        compararConMedidasOficiales(1, valorMedioOzono);
+                                    } else{
+                                        compararConMedidasOficiales(1, -999);
+                                    }
+
+                                    if (contadorCO2!=0){
+                                        float valorMedioCO2 = valorFinalCO2/contadorCO2;
+                                        System.out.println("CO2" + valorMedioCO2);
+                                        compararConMedidasOficiales(6, valorMedioCO2);
+                                    } else{
+                                        compararConMedidasOficiales(6, -999);
+                                    }
+                                }catch(Exception error1) {
+                                    Log.e("Sprint2", error1.toString());
                                 }
 
-                                if (contadorTemp!=0){
-                                    float valorMedioTemp = valorFinalTemp/contadorTemp;
-                                    System.out.println("Temperatura" + valorMedioTemp);
-                                    compararConMedidasOficiales(0, valorMedioTemp);
-                                } else{
-                                    compararConMedidasOficiales(0, -999); //ponemos un valor imposible para decirle a la funcion que de este valor no tenemos mediciones
-                                }
-
-                                if (contadorOzono!=0){
-                                    float valorMedioOzono = valorFinalOzono/contadorOzono;
-                                    System.out.println("Ozono" + valorMedioOzono);
-                                    compararConMedidasOficiales(1, valorMedioOzono);
-                                } else{
-                                    compararConMedidasOficiales(1, -999);
-                                }
-
-                                if (contadorCO2!=0){
-                                    float valorMedioCO2 = valorFinalCO2/contadorCO2;
-                                    System.out.println("CO2" + valorMedioCO2);
-                                    compararConMedidasOficiales(6, valorMedioCO2);
-                                } else{
-                                    compararConMedidasOficiales(6, -999);
-                                }
                             }
                         }
                 );
             }
-        }, 120000);
+        }, 60000);
         return v;
     }
 
@@ -226,7 +243,7 @@ public class PaginaDatos extends Fragment {
         }
 
     } // ()
-
+    TextView textoNombre;
     // --------------------------------------------------------------
     // String --> guardarEnCache()
     // --------------------------------------------------------------

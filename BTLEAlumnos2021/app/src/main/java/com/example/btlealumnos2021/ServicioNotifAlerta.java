@@ -100,8 +100,8 @@ public class ServicioNotifAlerta extends Service {
             notificationManager.notify(NOTIFICACION_ID, notificacion.build());
         }
 
-        Toast.makeText(this,"Servicio arrancado "+ idArranque,
-                Toast.LENGTH_SHORT).show();
+        /*Toast.makeText(this,"Servicio arrancado "+ idArranque,
+                Toast.LENGTH_SHORT).show();*/
         return START_STICKY;
     }
 
