@@ -2,72 +2,36 @@ package com.example.btlealumnos2021;
 
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.bluetooth.le.BluetoothLeScanner;
-import android.bluetooth.le.ScanCallback;
-import android.bluetooth.le.ScanFilter;
-import android.bluetooth.le.ScanResult;
-import android.bluetooth.le.ScanSettings;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.os.ParcelUuid;
-import android.util.JsonReader;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
-
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
-import java.io.Serializable;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.UUID;
+import com.example.btlealumnos2021.R;
 
 // -----------------------------------------------------------------------------------
 // @author: Hugo Martin Escrihuela
 // -----------------------------------------------------------------------------------
-public class MainActivity extends AppCompatActivity implements TextChangeListener {
-
-    private BroadcastReceiver broadcastReceiver;
-    // Método de la interfaz TextChangeListener para actualizar el texto en la actividad
-    @Override
-    public void onTextChange(String newText) {
-        distancia_texto.setText(newText);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        // Desregistra el receptor de difusión al destruir la actividad
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
-    }
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     // --------------------------------------------------------------
     // --------------------------------------------------------------
     private static final String ETIQUETA_LOG = ">>>>";
@@ -80,12 +44,6 @@ public class MainActivity extends AppCompatActivity implements TextChangeListene
 
     Button boton;
     Button botonEscaner;
-
-    TextView valorOzono;
-    TextView valorCO2;
-    TextView valorTemperatura;
-
-    TextView distancia_texto;
     public static class BluetoothLeScannerWrapper {
         private static BluetoothLeScanner elEscannerEstatico;
 
@@ -117,17 +75,6 @@ public class MainActivity extends AppCompatActivity implements TextChangeListene
 
         // Iniciar el servicio con el Intent que contiene datos
         startService(i);
-        // Registra el receptor de difusión
-        broadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if ("actualizarTexto".equals(intent.getAction())) {
-                    String nuevoTexto = intent.getStringExtra("nuevoTexto");
-                    onTextChange(nuevoTexto);
-                }
-            }
-        };
-        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, new IntentFilter("actualizarTexto"));
     } // ()
 
     // --------------------------------------------------------------
@@ -187,20 +134,87 @@ public class MainActivity extends AppCompatActivity implements TextChangeListene
         }
     } // ()
 
+    private Button[] btn = new Button[3];
+    private Button btn_unfocus;
+    private int[] btn_id = {R.id.btn0, R.id.btn1, R.id.btn2};
+
+    ViewPager2 viewPager;
+
+    public class MiPagerAdapter extends FragmentStateAdapter {
+        public MiPagerAdapter(FragmentActivity activity){
+            super(activity);
+        }
+        @Override
+        public int getItemCount() {
+            return 3;
+        }
+        @Override @NonNull
+        public Fragment createFragment(int position) {
+            switch (position) {
+                case 0: return new PaginaDatos();
+                case 1: return new PaginaWeb();
+                case 2: return new PaginaDispositivos();
+            }
+            return null;
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        //setForcus(btn_unfocus, (Button) findViewById(v.getId()));
+        //Or use switch
+        switch (v.getId()){
+            case R.id.btn0 :
+                setFocus(btn_unfocus, btn[0]);
+                viewPager.setCurrentItem(0);
+                break;
+
+            case R.id.btn1 :
+                setFocus(btn_unfocus, btn[1]);
+                viewPager.setCurrentItem(1);
+                break;
+
+            case R.id.btn2 :
+                setFocus(btn_unfocus, btn[2]);
+                viewPager.setCurrentItem(2);
+                break;
+        }
+    }
+
+    private void setFocus(Button btn_unfocus, Button btn_focus){
+        /*btn_unfocus.setTextColor(Color.rgb(49, 50, 51));
+        btn_unfocus.setBackgroundColor(Color.rgb(207, 207, 207));
+        btn_focus.setTextColor(Color.rgb(255, 255, 255));
+        btn_focus.setBackgroundColor(Color.rgb(3, 106, 150));*/
+        btn_focus.setTypeface(null, Typeface.BOLD);
+        btn_unfocus.setTypeface(null, Typeface.NORMAL);
+        this.btn_unfocus = btn_focus;
+    }
 
     // --------------------------------------------------------------
     // --------------------------------------------------------------
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_home);
+        setContentView(R.layout.activity_main);
 
         Log.d(ETIQUETA_LOG, " onCreate(): empieza ");
+
+        for(int i = 0; i < btn.length; i++){
+            btn[i] = (Button) findViewById(btn_id[i]);
+            //btn[i].setBackgroundColor(Color.rgb(207, 207, 207));
+            btn[i].setOnClickListener(this);
+        }
+
+        btn_unfocus = btn[0];
+
+        //Pestañas
+        viewPager = findViewById(R.id.viewPagerMain);
+        viewPager.setAdapter(new MiPagerAdapter(this));
 
         /*boton = findViewById(R.id.botonBuscarSensor);
         botonEscaner =findViewById(R.id.vincularqr);
         textoNombre=findViewById(R.id.textView);*/
-        distancia_texto=findViewById(R.id.singlastrength);
 
         /*boton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -216,191 +230,8 @@ public class MainActivity extends AppCompatActivity implements TextChangeListene
         //String valorAMostrar = shrdPrefs.getString("NombreDispositivo", "GTI-3A");
         //textoNombre.setText(valorAMostrar);
 
-
-        valorOzono=findViewById(R.id.valorOzono);
-        valorCO2=findViewById(R.id.valorCO2);
-        valorTemperatura=findViewById(R.id.valorTemperatura);
-
-        Timer timer= new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                PeticionarioREST elPeticionario = new PeticionarioREST();
-
-                SharedPreferences shrdPrefs = getPreferences(MODE_PRIVATE);
-                String nombreDispositivo = shrdPrefs.getString("NombreDispositivo", "GTI-3A");
-
-                long fechaActualMilis = System.currentTimeMillis();
-                long fechaDesdeMilis = fechaActualMilis-86400000;
-
-                String fechaActualString = new Date(fechaActualMilis).toString();
-                String fechaDesdeString = new Date(fechaDesdeMilis).toString();
-
-                //movil diego en wifi residencia 192.168.87.206
-                //pc diego en wifi residencia 192.168.85.210
-                //url de prueba = "http://192.168.85.210:8080/medicionEntreFechasYDispositivo" + "/" + "2023-10-15 01:00:00" + "/" + "2023-10-15 23:59:59"  + "/" + "FFFFFFFFFF"
-                elPeticionario.hacerPeticionREST("GET",  "http://192.168.85.210:8080/medicionEntreFechasYDispositivo" + "/" + fechaDesdeString + "/" + fechaActualString  + "/" + nombreDispositivo, null,
-                        new PeticionarioREST.RespuestaREST () {
-                            @Override
-                            public void callback(int codigo, String cuerpo) {
-                                Log.d( "pruebasPeticionario", "codigo = " + codigo + "\n" + cuerpo);
-
-                                //cuerpo contiene la/las mediciones obtenidas
-                                Type listType = new TypeToken<List<POJOMedicion>>(){}.getType();
-                                Gson gson = new Gson();
-                                List<POJOMedicion> listaMediciones = gson.fromJson(cuerpo, listType);
-                                float valorFinalTemp=0;
-                                float valorFinalOzono=0;
-                                float valorFinalCO2=0;
-                                int contadorTemp=0;
-                                int contadorOzono=0;
-                                int contadorCO2=0;
-                                for (POJOMedicion MedicionObjeto : listaMediciones) {
-                                    System.out.println("ID: " + MedicionObjeto.getId());
-                                    System.out.println("Valor: " + MedicionObjeto.getValor());
-                                    System.out.println("Tipo_Valor: " + MedicionObjeto.getTipo_valor_id());
-                                    System.out.println("Fecha: " + MedicionObjeto.getFecha());
-                                    System.out.println("Lugar: " + MedicionObjeto.getLugar());
-                                    System.out.println("------");
-
-                                    float esteValor = MedicionObjeto.getValor();
-
-                                    switch (MedicionObjeto.getTipo_valor_id()){
-                                        case 0: //caso temperatura
-                                            valorFinalTemp=valorFinalTemp+esteValor;
-                                            contadorTemp++;
-                                            break;
-
-                                        case 1: //caso ozono
-                                            valorFinalOzono=valorFinalOzono+esteValor;
-                                            contadorOzono++;
-                                            break;
-
-                                        case 6: //caso CO2
-                                            valorFinalCO2=valorFinalCO2+esteValor;
-                                            contadorCO2++;
-                                            break;
-                                    }
-
-                                }
-
-                                if (contadorTemp!=0){
-                                    float valorMedioTemp = valorFinalTemp/contadorTemp;
-                                    System.out.println("Temperatura" + valorMedioTemp);
-                                    compararConMedidasOficiales(0, valorMedioTemp);
-                                } else{
-                                    compararConMedidasOficiales(0, -999); //ponemos un valor imposible para decirle a la funcion que de este valor no tenemos mediciones
-                                }
-
-                                if (contadorOzono!=0){
-                                    float valorMedioOzono = valorFinalOzono/contadorOzono;
-                                    System.out.println("Ozono" + valorMedioOzono);
-                                    compararConMedidasOficiales(1, valorMedioOzono);
-                                } else{
-                                    compararConMedidasOficiales(1, -999);
-                                }
-
-                                if (contadorCO2!=0){
-                                    float valorMedioCO2 = valorFinalCO2/contadorCO2;
-                                    System.out.println("CO2" + valorMedioCO2);
-                                    compararConMedidasOficiales(6, valorMedioCO2);
-                                } else{
-                                    compararConMedidasOficiales(6, -999);
-                                }
-                            }
-                        }
-                );
-            }
-        }, 120000);
-
-
         Log.d(ETIQUETA_LOG, " onCreate(): termina ");
     } // onCreate()
-
-    // --------------------------------------------------------------
-    // int tipoValor, float Valor --> compararConMedidasOficiales()
-    // --------------------------------------------------------------
-    public void compararConMedidasOficiales(int tipoValor, float valor){
-
-        // el segundo int de la funcion mostrarValorEnHome indica la gravedad del dato{ 0=verde/ningun peligro 1=amarillo/ligeramente contaminado 2=rojo/alerta de contaminacion
-        switch (tipoValor){
-            case 0: //caso temperatura
-                mostrarValorEnHome(tipoValor, valor, 0);
-                break;
-
-            case 1: //caso ozono
-                if (valor < 180){
-                    mostrarValorEnHome(tipoValor, valor, 0);
-                } else if (valor < 240) {
-                    mostrarValorEnHome(tipoValor, valor, 1);
-                } else{
-                    mostrarValorEnHome(tipoValor, valor, 2);
-                }
-                break;
-
-            case 6: //caso CO2
-                if (valor < 500){
-                    mostrarValorEnHome(tipoValor, valor, 0);
-                } else if (valor < 1200) {
-                    mostrarValorEnHome(tipoValor, valor, 1);
-                } else{
-                    mostrarValorEnHome(tipoValor, valor, 2);
-                }
-                break;
-        }
-
-    } // ()
-    // --------------------------------------------------------------
-    // int tipoValor, float Valor --> compararConMedidasOficiales()
-    // --------------------------------------------------------------
-    public void mostrarValorEnHome(int tipoValor, float valor, int gravedad){
-
-        //gravedad 0 = no hay contaminacion / contaminacion leve (verde)
-        //gravedad 1 = hay contaminacion modedara (amarillo)
-        //gravedad 2 = contaminacion alta o excesiva / alerta (rojo)
-
-        switch (tipoValor){
-            case 0: //caso temperatura
-                if (valor == -999 || valor == -999.0){
-                    valorTemperatura.setText("No info");
-                } else{
-                    valorTemperatura.setText(valor + " ºC");
-                }
-
-                break;
-
-            case 1: //caso ozono
-                if (valor == -999 || valor == -999.0){ //no tenemos datos de ozono
-                    valorOzono.setText("No info");
-                } else if (gravedad == 0){ // cuando hay poca contaminacion
-                    valorOzono.setText(valor + " µg/m3");
-                    valorOzono.setTextColor(Color.GREEN);
-                } else if (gravedad == 1) { //contaminacion moderada
-                    valorOzono.setText(valor + " µg/m3");
-                    valorOzono.setTextColor(Color.YELLOW);
-                } else { //hay mucha contaminacion
-                    valorOzono.setText(valor + " µg/m3");
-                    valorOzono.setTextColor(Color.RED);
-                }
-                break;
-
-            case 6: //caso CO2
-                if (valor == -999 || valor == -999.0){ //no tenemos datos de CO2
-                    valorCO2.setText("No info");
-                }else if (gravedad == 0){ // cuando hay poca contaminacion
-                    valorCO2.setText(valor + " ppm");
-                    valorCO2.setTextColor(Color.GREEN);
-                } else if (gravedad == 1) { //contaminacion moderada
-                    valorCO2.setText(valor + " ppm");
-                    valorCO2.setTextColor(Color.YELLOW);
-                } else { //hay mucha contaminacion
-                    valorCO2.setText(valor + " ppm");
-                    valorCO2.setTextColor(Color.RED);
-                }
-                break;
-        }
-
-    } // ()
 
     // --------------------------------------------------------------
     // N, Lista<Texto>, Lista<N> --> onRequestPermissionsResult()
@@ -429,57 +260,12 @@ public class MainActivity extends AppCompatActivity implements TextChangeListene
         // permissions this app might request.
     } // ()
 
-    // --------------------------------------------------------------
-    // --------------------------------------------------------------
-    public void abrirEscaneoQr(View view){
-        Log.d(ETIQUETA_LOG, " boton vincular sensor con qr Pulsado");
-        Log.d(ETIQUETA_LOG, " Empezamos escaneo de qr con camara");
 
-        //abrimos la camara con la libreria de escaneo de qr zxing
-        new IntentIntegrator(this).initiateScan();
-        //la respuesta del escaneo se obtiene en onActivityResult
-
-    } // ()
-
-    // --------------------------------------------------------------
-    // N, Lista<Texto>, Lista<N> --> onRequestPermissionsResult()
-    // --------------------------------------------------------------
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        //Log.d(ETIQUETA_LOG, "requestCode: " + String.valueOf(requestCode));
-        //obtenemos en un string el resultado del escaneo de qr
-        IntentResult result = IntentIntegrator.parseActivityResult(requestCode,resultCode,data);
-        String nombreObtenido = result.getContents();
-
-        Log.d(ETIQUETA_LOG, "Datos de QR obtenidos:" + nombreObtenido);
-
-        //vamos a guardar este valor obtenido en la cache de la app
-        guardarEnCache(nombreObtenido);
-
-    } // ()
 
     TextView textoNombre;
     //textoNombre=findViewById(R.id.textView);
 
-    // --------------------------------------------------------------
-    // String --> guardarEnCache()
-    // --------------------------------------------------------------
-    public void guardarEnCache(String valor){
 
-        SharedPreferences shrdPrefs = getPreferences(MODE_PRIVATE);
-        SharedPreferences.Editor editor = shrdPrefs.edit();
-        //crea un archivo xml donde almacena el dato en la ubicacion:
-        //data/com.example.btlealumnos2021/shared_prefs
-        editor.putString("NombreDispositivo", valor);
-        editor.commit();
-
-        //para este sprint mostramos el dato guardado  en el textview para comprobar que funciona
-        String valorAMostrar = shrdPrefs.getString("NombreDispositivo", "GTI-3A");
-        //textoNombre.setText(valorAMostrar);
-
-    } // ()
 
 
     private void probarEnviarGET_Otra() {
