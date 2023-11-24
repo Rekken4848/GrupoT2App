@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.widget.LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <Button
+        android:id="@+id/botonBuscarSensor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="botonBuscarSensor"
+        android:text="Buscar nuestro dispositivo  BTLE" />
+
+    <Button
+        android:id="@+id/vincularqr"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="abrirEscaneoQr"
+        android:text="Vincular dispositivo" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Nombre dispositivo: GTI-3A" />
+
+</android.widget.LinearLayout>

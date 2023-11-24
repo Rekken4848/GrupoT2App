@@ -2,42 +2,36 @@ package com.example.btlealumnos2021;
 
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.bluetooth.le.BluetoothLeScanner;
-import android.bluetooth.le.ScanCallback;
-import android.bluetooth.le.ScanFilter;
-import android.bluetooth.le.ScanResult;
-import android.bluetooth.le.ScanSettings;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
-import android.os.ParcelUuid;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
-
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import com.example.btlealumnos2021.R;
 
 // -----------------------------------------------------------------------------------
 // @author: Hugo Martin Escrihuela
 // -----------------------------------------------------------------------------------
-public class MainActivity extends AppCompatActivity {
-
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     // --------------------------------------------------------------
     // --------------------------------------------------------------
     private static final String ETIQUETA_LOG = ">>>>";
@@ -50,8 +44,6 @@ public class MainActivity extends AppCompatActivity {
 
     Button boton;
     Button botonEscaner;
-    TextView textoNombre;
-
     public static class BluetoothLeScannerWrapper {
         private static BluetoothLeScanner elEscannerEstatico;
 
@@ -70,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
 
     // --------------------------------------------------------------
     // --------------------------------------------------------------
-    public void botonBuscarSensor() {
+    public void botonBuscarSensor(View v) {
         Log.d(ETIQUETA_LOG, " boton buscar Sensor Pulsado");
         Log.d("Pasar dato", " Enviar el servicio: " + elEscanner.hashCode());
         /*Gson gson = new Gson();
@@ -142,6 +134,62 @@ public class MainActivity extends AppCompatActivity {
         }
     } // ()
 
+    private Button[] btn = new Button[3];
+    private Button btn_unfocus;
+    private int[] btn_id = {R.id.btn0, R.id.btn1, R.id.btn2};
+
+    ViewPager2 viewPager;
+
+    public class MiPagerAdapter extends FragmentStateAdapter {
+        public MiPagerAdapter(FragmentActivity activity){
+            super(activity);
+        }
+        @Override
+        public int getItemCount() {
+            return 3;
+        }
+        @Override @NonNull
+        public Fragment createFragment(int position) {
+            switch (position) {
+                case 0: return new PaginaDatos();
+                case 1: return new PaginaWeb();
+                case 2: return new PaginaDispositivos();
+            }
+            return null;
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        //setForcus(btn_unfocus, (Button) findViewById(v.getId()));
+        //Or use switch
+        switch (v.getId()){
+            case R.id.btn0 :
+                setFocus(btn_unfocus, btn[0]);
+                viewPager.setCurrentItem(0);
+                break;
+
+            case R.id.btn1 :
+                setFocus(btn_unfocus, btn[1]);
+                viewPager.setCurrentItem(1);
+                break;
+
+            case R.id.btn2 :
+                setFocus(btn_unfocus, btn[2]);
+                viewPager.setCurrentItem(2);
+                break;
+        }
+    }
+
+    private void setFocus(Button btn_unfocus, Button btn_focus){
+        /*btn_unfocus.setTextColor(Color.rgb(49, 50, 51));
+        btn_unfocus.setBackgroundColor(Color.rgb(207, 207, 207));
+        btn_focus.setTextColor(Color.rgb(255, 255, 255));
+        btn_focus.setBackgroundColor(Color.rgb(3, 106, 150));*/
+        btn_focus.setTypeface(null, Typeface.BOLD);
+        btn_unfocus.setTypeface(null, Typeface.NORMAL);
+        this.btn_unfocus = btn_focus;
+    }
 
     // --------------------------------------------------------------
     // --------------------------------------------------------------
@@ -152,26 +200,37 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d(ETIQUETA_LOG, " onCreate(): empieza ");
 
-        boton = findViewById(R.id.botonBuscarSensor);
-        botonEscaner =findViewById(R.id.vincularqr);
-        textoNombre=findViewById(R.id.textView);
+        for(int i = 0; i < btn.length; i++){
+            btn[i] = (Button) findViewById(btn_id[i]);
+            //btn[i].setBackgroundColor(Color.rgb(207, 207, 207));
+            btn[i].setOnClickListener(this);
+        }
 
-        boton.setOnClickListener(new View.OnClickListener() {
+        btn_unfocus = btn[0];
+
+        //Pestañas
+        viewPager = findViewById(R.id.viewPagerMain);
+        viewPager.setAdapter(new MiPagerAdapter(this));
+
+        /*boton = findViewById(R.id.botonBuscarSensor);
+        botonEscaner =findViewById(R.id.vincularqr);
+        textoNombre=findViewById(R.id.textView);*/
+
+        /*boton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 botonBuscarSensor();
             }
-        });
+        });*/
 
         inicializarBlueTooth();
 
-        Log.d(ETIQUETA_LOG, " onCreate(): termina ");
-
         //para este sprint mostramos el dato guardado  en el textview para comprobar que funciona
-        SharedPreferences shrdPrefs = getPreferences(MODE_PRIVATE);
-        String valorAMostrar = shrdPrefs.getString("NombreDispositivo", "GTI-3A");
-        textoNombre.setText(valorAMostrar);
+        //SharedPreferences shrdPrefs = getPreferences(MODE_PRIVATE);
+        //String valorAMostrar = shrdPrefs.getString("NombreDispositivo", "GTI-3A");
+        //textoNombre.setText(valorAMostrar);
 
+        Log.d(ETIQUETA_LOG, " onCreate(): termina ");
     } // onCreate()
 
     // --------------------------------------------------------------
@@ -201,56 +260,29 @@ public class MainActivity extends AppCompatActivity {
         // permissions this app might request.
     } // ()
 
-    // --------------------------------------------------------------
-    // --------------------------------------------------------------
-    public void abrirEscaneoQr(View view){
-        Log.d(ETIQUETA_LOG, " boton vincular sensor con qr Pulsado");
-        Log.d(ETIQUETA_LOG, " Empezamos escaneo de qr con camara");
 
-        //abrimos la camara con la libreria de escaneo de qr zxing
-        new IntentIntegrator(this).initiateScan();
-        //la respuesta del escaneo se obtiene en onActivityResult
 
-    } // ()
+    TextView textoNombre;
+    //textoNombre=findViewById(R.id.textView);
 
-    // --------------------------------------------------------------
-    // N, Lista<Texto>, Lista<N> --> onRequestPermissionsResult()
-    // --------------------------------------------------------------
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
 
-        //Log.d(ETIQUETA_LOG, "requestCode: " + String.valueOf(requestCode));
-        //obtenemos en un string el resultado del escaneo de qr
-        IntentResult result = IntentIntegrator.parseActivityResult(requestCode,resultCode,data);
-        String nombreObtenido = result.getContents();
 
-        Log.d(ETIQUETA_LOG, "Datos de QR obtenidos:" + nombreObtenido);
 
-        //vamos a guardar este valor obtenido en la cache de la app
-        guardarEnCache(nombreObtenido);
+    private void probarEnviarGET_Otra() {
+        PeticionarioREST elPeticionario = new PeticionarioREST();
+
+        //movil diego en wifi residencia 192.168.87.206
+        //pc diego en wifi residencia 192.168.85.210
+        elPeticionario.hacerPeticionREST("GET",  "http://192.168.85.210:8080/medicionEntreFechasTipoYDispositivo" + "/" + "2023-10-15 01:00:00" + "/" + "2023-10-15 23:59:59" + "/" + 1 + "/" + "FFFFFFFFFF", null,
+                new PeticionarioREST.RespuestaREST () {
+                    @Override
+                    public void callback(int codigo, String cuerpo) {
+                        Log.d( "pruebasPeticionario", "codigo = " + codigo + "\n" + cuerpo);
+                    }
+                }
+        );
 
     } // ()
-
-    // --------------------------------------------------------------
-    // String --> guardarEnCache()
-    // --------------------------------------------------------------
-    public void guardarEnCache(String valor){
-
-        SharedPreferences shrdPrefs = getPreferences(MODE_PRIVATE);
-        SharedPreferences.Editor editor = shrdPrefs.edit();
-        //crea un archivo xml donde almacena el dato en la ubicacion:
-        //data/com.example.btlealumnos2021/shared_prefs
-        editor.putString("NombreDispositivo", valor);
-        editor.commit();
-
-        //para este sprint mostramos el dato guardado  en el textview para comprobar que funciona
-        String valorAMostrar = shrdPrefs.getString("NombreDispositivo", "GTI-3A");
-        textoNombre.setText(valorAMostrar);
-
-    } // ()
-
-
 } // class
 // --------------------------------------------------------------
 // --------------------------------------------------------------

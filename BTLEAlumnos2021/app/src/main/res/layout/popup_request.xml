@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#D6D6D6">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="478dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="@android:dimen/notification_large_icon_width"
+        android:layout_marginEnd="64dp"
+        android:layout_marginBottom="189dp"
+        android:background="@drawable/contenedorpopups"
+        android:orientation="vertical">
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="54dp">
+
+            <ImageView
+                android:id="@+id/imageView12"
+                android:layout_width="19dp"
+                android:layout_height="22dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintEnd_toEndOf="@+id/requestTitle"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/x" />
+
+            <TextView
+                android:id="@+id/requestTitle"
+                android:layout_width="match_parent"
+                android:layout_height="51dp"
+                android:gravity="center"
+                android:text="Contactar con Ayuda"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Informa del problema que estas teniendo" />
+
+        <EditText
+            android:id="@+id/titleforrequest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Titulo del problema"
+            android:inputType="text"
+            android:textSize="16sp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="314dp" />
+
+        <Button
+            android:id="@+id/buttonrequest"
+            android:layout_width="84dp"
+            android:layout_height="37dp"
+            android:layout_gravity="right"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/fondo_botones"
+            android:backgroundTint="#80CDB9"
+            android:gravity="center"
+            android:text="Enviar"
+            android:textAllCaps="false"
+            android:textColorLink="#FFFFFF"></Button>
+
+    </LinearLayout>
+
+
+</RelativeLayout>

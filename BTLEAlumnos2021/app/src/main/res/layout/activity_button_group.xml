@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:gravity="center_horizontal">
+
+    <!-- Botón 0 -->
+
+    <!-- Botón 1 -->
+    <Button
+        android:id="@+id/btn0"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:text="Home"
+        app:icon="@drawable/hogar"
+        app:iconGravity="top"
+        android:background="#00FFFFFF"
+        app:iconTintMode="multiply"
+        android:textColor="@android:color/black"/>
+
+    <Button
+        android:id="@+id/btn1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:text="Web"
+        app:icon="@drawable/mapa"
+        app:iconGravity="top"
+        android:background="#00FFFFFF"
+        app:iconTintMode="multiply"
+        android:textColor="@android:color/black"/>
+
+    <!-- Botón 2 -->
+    <Button
+        android:id="@+id/btn2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:background="#00FFFFFF"
+        android:text="Dispositivo"
+        app:icon="@drawable/ondablanco"
+        app:iconGravity="top"
+        app:iconTintMode="multiply"
+        android:textColor="@android:color/black"/>
+</LinearLayout>
