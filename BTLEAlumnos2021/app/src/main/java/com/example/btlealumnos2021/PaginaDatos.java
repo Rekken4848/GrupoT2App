@@ -21,8 +21,11 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import java.lang.reflect.Type;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -42,9 +45,7 @@ public class PaginaDatos extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_home, container, false);
-
-
-        Log.e("Shared create", "se crea el fragment");
+        
         valorOzono=v.findViewById(R.id.valorOzono);
         valorCO2=v.findViewById(R.id.valorCO2);
         valorTemperatura=v.findViewById(R.id.valorTemperatura);
@@ -65,30 +66,35 @@ public class PaginaDatos extends Fragment {
                     long fechaActualMilis = System.currentTimeMillis();
                     long fechaDesdeMilis = fechaActualMilis-86400000;
 
-                    String fechaActualString = new Date(fechaActualMilis).toString();
-                    String fechaDesdeString = new Date(fechaDesdeMilis).toString();
+                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault());
+
+                    String fechaActualString = df.format(new Date(fechaActualMilis));
+                    String fechaDesdeString = df.format(new Date(fechaDesdeMilis));
+                    Log.d( "PeticionarioEstimacion", fechaActualString);
+                    Log.d( "PeticionarioEstimacion", fechaDesdeString);
 
                     //IP movil http://192.168.43.252:8080/
                     //IP casa http://192.168.1.21:8080/
                     //movil diego en wifi residencia 192.168.87.206
                     //pc diego en wifi residencia 192.168.85.210
                     //url de prueba = "http://192.168.85.210:8080/medicionEntreFechasYDispositivo" + "/" + "2023-10-15 01:00:00" + "/" + "2023-10-15 23:59:59"  + "/" + "FFFFFFFFFF"
-                    elPeticionario.hacerPeticionREST("GET",  "http://192.168.1.48:8080/medicionEntreFechasYDispositivo" + "/" + fechaDesdeString + "/" + fechaActualString  + "/" + nombreDispositivo, null,
+                    elPeticionario.hacerPeticionREST("GET",  "http://192.168.43.252:8080/medicionEntreFechasYDispositivo" + "/" + fechaDesdeString + "/" + fechaActualString  + "/" + nombreDispositivo, null,
                             new PeticionarioREST.RespuestaREST () {
                                 @Override
                                 public void callback(int codigo, String cuerpo) {
                                     Log.d( "PeticionarioEstimacion", "codigo = " + codigo + "\n" + cuerpo);
-                                    
-                                    //cuerpo contiene la/las mediciones obtenidas
-                                    Type listType = new TypeToken<List<POJOMedicion>>(){}.getType();
-                                    Gson gson = new Gson();
-                                    List<POJOMedicion> listaMediciones = gson.fromJson(cuerpo, listType);
-                                    float valorFinalTemp=0;
-                                    float valorFinalOzono=0;
-                                    float valorFinalCO2=0;
-                                    int contadorTemp=0;
-                                    int contadorOzono=0;
-                                    int contadorCO2=0;
+
+                                    try {
+                                        //cuerpo contiene la/las mediciones obtenidas
+                                        Type listType = new TypeToken<List<POJOMedicion>>(){}.getType();
+                                        Gson gson = new Gson();
+                                        List<POJOMedicion> listaMediciones = gson.fromJson(cuerpo, listType);
+                                        float valorFinalTemp=0;
+                                        float valorFinalOzono=0;
+                                        float valorFinalCO2=0;
+                                        int contadorTemp=0;
+                                        int contadorOzono=0;
+                                        int contadorCO2=0;
 
                                         for (POJOMedicion MedicionObjeto : listaMediciones) {
                                             System.out.println("ID: " + MedicionObjeto.getId());
@@ -116,7 +122,6 @@ public class PaginaDatos extends Fragment {
                                                     contadorCO2++;
                                                     break;
                                             }
-
                                         }
 
                                         if (contadorTemp!=0){
@@ -143,6 +148,12 @@ public class PaginaDatos extends Fragment {
                                             compararConMedidasOficiales(6, -999);
                                         }
 
+                                    }catch (Exception err2){
+                                        compararConMedidasOficiales(0, -999);
+                                        compararConMedidasOficiales(1, -999);
+                                        compararConMedidasOficiales(6, -999);
+                                        Log.e("PeticionarioEstimacion", "error al mostrar los datos");
+                                    }
 
                                 }
                             }
@@ -152,7 +163,7 @@ public class PaginaDatos extends Fragment {
                     Log.e("TimerEstimacionDatos", err.toString());
                 }
             }
-        }, 0,30000);
+        }, 0,60000);
         return v;
     }
 
@@ -204,7 +215,8 @@ public class PaginaDatos extends Fragment {
                 if (valor == -999 || valor == -999.0){
                     valorTemperatura.setText("No info");
                 } else{
-                    valorTemperatura.setText(valor + " ºC");
+                    DecimalFormat df = new DecimalFormat("###.#");
+                    valorTemperatura.setText(df.format(valor) + " ºC");
                 }
 
                 break;
