@@ -66,7 +66,7 @@ public class ServicioReceptorBeacons extends Service {
                     notificacionAlerta(0, 2);
                 }
             }
-        }, 120000);
+        }, 0,120000);
     }
 
     @Override
