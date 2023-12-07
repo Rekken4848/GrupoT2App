@@ -12,6 +12,10 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
 
 public class PaginaDispositivos extends Fragment implements TextChangeListener {
     TextView distancia_texto;
@@ -22,8 +26,24 @@ public class PaginaDispositivos extends Fragment implements TextChangeListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.main_popup, container, false);
-        distancia_texto = v.findViewById(R.id.singlastrength);
+        View v = inflater.inflate(R.layout.fragment_notifications, container, false);
+        //distancia_texto = v.findViewById(R.id.singlastrength);
+
+
+        RecyclerView recyclerAnuncio = v.findViewById(R.id.recyclerView);
+        recyclerAnuncio.setLayoutManager(new LinearLayoutManager(this.getContext(), LinearLayoutManager.VERTICAL, false));
+
+        ArrayList<POJOAnuncio> listaAnuncios = new ArrayList<POJOAnuncio>();
+
+        POJOAnuncio anuncio = new POJOAnuncio("titulo", "contenido", "problemas", "estado");
+        listaAnuncios.add(anuncio);
+
+        AdaptadorAnuncios adapter = new AdaptadorAnuncios(listaAnuncios, this.getContext());
+        recyclerAnuncio.setAdapter(adapter);
+
+
+
+
 
         // Registra el receptor de difusión
         broadcastReceiver = new BroadcastReceiver() {
