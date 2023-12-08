@@ -15,16 +15,21 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import java.util.ArrayList;
 
 public class PaginaDispositivos extends Fragment implements TextChangeListener {
     TextView distancia_texto;
     ImageView recargarecycler;
+    ImageView ImagenEscanerQR;
     private Context context;
     private SharedPreferences shrdPrefs;
     private classAnuncio classanuncio;
@@ -38,20 +43,30 @@ public class PaginaDispositivos extends Fragment implements TextChangeListener {
         View v = inflater.inflate(R.layout.fragment_notifications, container, false);
         //distancia_texto = v.findViewById(R.id.singlastrength);
 
+        context = this.getContext();
+
         shrdPrefs = getActivity().getSharedPreferences("MainActivity", MODE_PRIVATE);
         String nombreDispositivo = shrdPrefs.getString("NombreDispositivo", "GTI-3A");
 
         RecyclerView recyclerAnuncio = v.findViewById(R.id.recyclerView);
-        recyclerAnuncio.setLayoutManager(new LinearLayoutManager(this.getContext(), LinearLayoutManager.VERTICAL, false));
+        recyclerAnuncio.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
 
         classanuncio = new classAnuncio();
-        classanuncio.recogerAnunciosDeServidorYMostrarRecycler(nombreDispositivo, recyclerAnuncio, this.getContext());
+        classanuncio.recogerAnunciosDeServidorYMostrarRecycler(nombreDispositivo, recyclerAnuncio, context);
 
         recargarecycler = v.findViewById(R.id.recargarRecyclerImage);
         recargarecycler.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                classanuncio.recogerAnunciosDeServidorYMostrarRecycler(nombreDispositivo, recyclerAnuncio, getContext());
+                classanuncio.recogerAnunciosDeServidorYMostrarRecycler(nombreDispositivo, recyclerAnuncio, context);
+            }
+        });
+
+        ImagenEscanerQR = v.findViewById(R.id.imageViewEscanerQR);
+        ImagenEscanerQR.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                abrirEscaneoQr();
             }
         });
 
@@ -82,4 +97,17 @@ public class PaginaDispositivos extends Fragment implements TextChangeListener {
         // Desregistra el receptor de difusión al destruir la actividad
         LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(broadcastReceiver);
     }
+
+    // --------------------------------------------------------------
+    // --------------------------------------------------------------
+    public void abrirEscaneoQr(){
+        Log.d("<<<>>>", " boton vincular sensor con qr Pulsado");
+        Log.d("<<<>>>", " Empezamos escaneo de qr con camara");
+
+        //abrimos la camara con la libreria de escaneo de qr zxing
+        new IntentIntegrator(getActivity()).initiateScan();
+        //la respuesta del escaneo se obtiene en onActivityResult
+
+    } // ()
+
 }
