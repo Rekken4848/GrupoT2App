@@ -58,7 +58,8 @@ public class PaginaDispositivos extends Fragment implements TextChangeListener {
         recargarecycler.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                classanuncio.recogerAnunciosDeServidorYMostrarRecycler(nombreDispositivo, recyclerAnuncio, context);
+                //classanuncio.recogerAnunciosDeServidorYMostrarRecycler(nombreDispositivo, recyclerAnuncio, context);
+                nuevoAnuncio();
             }
         });
 
@@ -98,7 +99,9 @@ public class PaginaDispositivos extends Fragment implements TextChangeListener {
         LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(broadcastReceiver);
     }
 
+
     // --------------------------------------------------------------
+    // la respuesta a este intent se recogen en MainActivity por ser esa una actividad y esto un fragment
     // --------------------------------------------------------------
     public void abrirEscaneoQr(){
         Log.d("<<<>>>", " boton vincular sensor con qr Pulsado");
@@ -109,5 +112,12 @@ public class PaginaDispositivos extends Fragment implements TextChangeListener {
         //la respuesta del escaneo se obtiene en onActivityResult
 
     } // ()
+
+    //----------------------------------------------------------------
+    // funciones para crear anuncio
+    //----------------------------------------------------------------
+    public void nuevoAnuncio(){
+        classanuncio.crearYPublicarAnuncio("GTI-3A", new POJOAnuncio());
+    }
 
 }

@@ -1,6 +1,7 @@
 package com.example.btlealumnos2021;
 
 public class POJOAnuncio {
+    private int anuncio_id;
     private String titulo;
     private String contenido;
     private String problemas;
@@ -8,7 +9,8 @@ public class POJOAnuncio {
 
     public POJOAnuncio(){}
 
-    public POJOAnuncio(String titulo, String contenido, String problemas, String estado){
+    public POJOAnuncio(String titulo, String contenido, String problemas, String estado, int anuncio_id){
+        this.anuncio_id=anuncio_id;
         this.titulo=titulo;
         this.contenido=contenido;
         this.problemas=problemas;
@@ -45,5 +47,13 @@ public class POJOAnuncio {
 
     public void setEstado(String estado) {
         this.estado = estado;
+    }
+
+    public int getAnuncio_id() {
+        return anuncio_id;
+    }
+
+    public void setAnuncio_id(int idAnuncio) {
+        this.anuncio_id = idAnuncio;
     }
 }
