@@ -65,7 +65,7 @@
         app:layout_constraintEnd_toEndOf="@+id/imageView6"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
+    <!--<ImageView
         android:id="@+id/imageView9"
         android:layout_width="44dp"
         android:layout_height="44dp"
@@ -73,7 +73,7 @@
         android:src="@drawable/masplus"
         app:layout_constraintBottom_toBottomOf="@+id/imageViewEscanerQR"
         app:layout_constraintEnd_toStartOf="@+id/imageViewEscanerQR"
-        app:layout_constraintTop_toTopOf="@+id/imageViewEscanerQR" />
+        app:layout_constraintTop_toTopOf="@+id/imageViewEscanerQR" />-->
 
     <ImageView
         android:id="@+id/imageView10"
