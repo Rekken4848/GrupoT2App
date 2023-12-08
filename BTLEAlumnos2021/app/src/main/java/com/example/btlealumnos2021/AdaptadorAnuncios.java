@@ -17,6 +17,7 @@ import com.example.btlealumnos2021.databinding.ElementoListaBinding;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class AdaptadorAnuncios extends RecyclerView.Adapter<AdaptadorAnuncios.ViewHolder> {
     ArrayList<POJOAnuncio> listaAnuncios;
@@ -47,25 +48,41 @@ public class AdaptadorAnuncios extends RecyclerView.Adapter<AdaptadorAnuncios.Vi
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView nombre;
-        public ImageView foto;
+        public TextView TituloAnuncio;
+        public TextView EstadoAnuncio;
+        public TextView ProblemasAnuncio;
+        public TextView ContenidoAnuncio;
 
 
         public ViewHolder(ElementoListaBinding itemView) {
             super(itemView.getRoot());
-            nombre = itemView.contendiorequesttitulo;
+            TituloAnuncio = itemView.contendiorequesttitulo;
+            EstadoAnuncio = itemView.estadoAnuncio;
+            ProblemasAnuncio = itemView.problemasAnuncio;
+            ContenidoAnuncio = itemView.contenidoAnuncio;
 
         }
 
         public ViewHolder(View itemView) {
             super(itemView);
 
-            nombre = itemView.findViewById(R.id.contendiorequesttitulo);
-            foto = itemView.findViewById(R.id.foto);
+            TituloAnuncio = itemView.findViewById(R.id.contendiorequesttitulo);
+            EstadoAnuncio = itemView.findViewById(R.id.estadoAnuncio);
+            ProblemasAnuncio = itemView.findViewById(R.id.problemasAnuncio);
+            ContenidoAnuncio = itemView.findViewById(R.id.contenidoAnuncio);
         }
 
         public void personaliza(final POJOAnuncio anuncio) {
-            nombre.setText("pruebaa");
+            TituloAnuncio.setText(anuncio.getTitulo());
+            String estadotexto = anuncio.getEstado();
+            if (Objects.equals(estadotexto, "Leido")){
+                EstadoAnuncio.setTextColor(R.color.cyan);
+            } else if (Objects.equals(estadotexto, "Completado")) {
+                EstadoAnuncio.setTextColor(R.color.green);
+            }
+            EstadoAnuncio.setText(anuncio.getEstado());
+            ProblemasAnuncio.setText(anuncio.getProblemas());
+            ContenidoAnuncio.setText(anuncio.getContenido());
         }
     }
 }

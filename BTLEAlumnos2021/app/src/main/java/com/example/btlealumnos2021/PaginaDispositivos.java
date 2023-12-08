@@ -1,10 +1,14 @@
 package com.example.btlealumnos2021;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +23,8 @@ import java.util.ArrayList;
 
 public class PaginaDispositivos extends Fragment implements TextChangeListener {
     TextView distancia_texto;
+    private SharedPreferences shrdPrefs;
+    private classAnuncio classanuncio;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,20 +35,14 @@ public class PaginaDispositivos extends Fragment implements TextChangeListener {
         View v = inflater.inflate(R.layout.fragment_notifications, container, false);
         //distancia_texto = v.findViewById(R.id.singlastrength);
 
+        shrdPrefs = getActivity().getSharedPreferences("MainActivity", MODE_PRIVATE);
+        String nombreDispositivo = shrdPrefs.getString("NombreDispositivo", "GTI-3A");
 
         RecyclerView recyclerAnuncio = v.findViewById(R.id.recyclerView);
         recyclerAnuncio.setLayoutManager(new LinearLayoutManager(this.getContext(), LinearLayoutManager.VERTICAL, false));
 
-        ArrayList<POJOAnuncio> listaAnuncios = new ArrayList<POJOAnuncio>();
-
-        POJOAnuncio anuncio = new POJOAnuncio("titulo", "contenido", "problemas", "estado");
-        listaAnuncios.add(anuncio);
-
-        AdaptadorAnuncios adapter = new AdaptadorAnuncios(listaAnuncios, this.getContext());
-        recyclerAnuncio.setAdapter(adapter);
-
-
-
+        classanuncio = new classAnuncio();
+        classanuncio.recogerAnunciosDeServidorYMostrarRecycler(nombreDispositivo, recyclerAnuncio, this.getContext());
 
 
         // Registra el receptor de difusión
