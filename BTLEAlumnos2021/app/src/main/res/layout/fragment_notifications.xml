@@ -114,7 +114,17 @@
             android:src="@drawable/agregar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/recargarRecyclerImage"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:src="@drawable/actualizar"
+            app:layout_constraintBottom_toTopOf="@+id/recyclerView"
+            app:layout_constraintEnd_toStartOf="@+id/imageView7"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <TextView
         android:id="@+id/textView2"

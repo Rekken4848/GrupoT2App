@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -23,6 +24,8 @@ import java.util.ArrayList;
 
 public class PaginaDispositivos extends Fragment implements TextChangeListener {
     TextView distancia_texto;
+    ImageView recargarecycler;
+    private Context context;
     private SharedPreferences shrdPrefs;
     private classAnuncio classanuncio;
     @Override
@@ -44,6 +47,13 @@ public class PaginaDispositivos extends Fragment implements TextChangeListener {
         classanuncio = new classAnuncio();
         classanuncio.recogerAnunciosDeServidorYMostrarRecycler(nombreDispositivo, recyclerAnuncio, this.getContext());
 
+        recargarecycler = v.findViewById(R.id.recargarRecyclerImage);
+        recargarecycler.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                classanuncio.recogerAnunciosDeServidorYMostrarRecycler(nombreDispositivo, recyclerAnuncio, getContext());
+            }
+        });
 
         // Registra el receptor de difusión
         broadcastReceiver = new BroadcastReceiver() {
