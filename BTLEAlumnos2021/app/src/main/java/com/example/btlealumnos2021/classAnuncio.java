@@ -5,7 +5,9 @@ import static android.content.Context.MODE_PRIVATE;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
+import android.widget.Toast;
 
+import androidx.core.graphics.drawable.IconCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
@@ -63,7 +65,7 @@ public class classAnuncio {
 
     int idNuevoAnuncio;
     String DNIAdmin;
-    public void crearYPublicarAnuncio(String nombreDispositivo, POJOAnuncio anuncioAPublicar){
+    public void crearYPublicarAnuncio(String nombreDispositivo, POJOAnuncio anuncioAPublicar, Context context){
         PeticionarioREST elPeticionario = new PeticionarioREST();
         //obtenemos todos los anuncios para saber la id del anuncio que crearemos ahora y poder crear Dispositivo_Anuncio
         elPeticionario.hacerPeticionREST("GET",  "http://192.168.21.58:8080/todosAnuncios", null,
@@ -124,6 +126,7 @@ public class classAnuncio {
                                                                                                         Log.d( "Post AnuncioAdmin", "codigo = " + codigo + "\n" + cuerpo);
 
                                                                                                         //aqui se ha añadido correctamente, avisar de alguna manera al usuario
+                                                                                                        Toast.makeText(context, "Se ha enviado el aviso al administrador correctamente", Toast.LENGTH_SHORT).show();
 
                                                                                                     }
                                                                                                 }
@@ -131,6 +134,7 @@ public class classAnuncio {
 
                                                                                     }catch (Exception err1){
                                                                                         Log.e("Post AnuncioDispositivo", "error al hacer post y crear anuncio: " + err1);
+                                                                                        Toast.makeText(context, "No se ha podido enviar el aviso", Toast.LENGTH_SHORT).show();
                                                                                     }
 
                                                                                 }
@@ -139,6 +143,7 @@ public class classAnuncio {
 
                                                                 }catch (Exception err1){
                                                                     Log.e("Post Anuncio", "error al hacer post y crear anuncio: " + err1);
+                                                                    Toast.makeText(context, "No se ha podido enviar el aviso", Toast.LENGTH_SHORT).show();
                                                                 }
 
                                                             }
@@ -148,6 +153,7 @@ public class classAnuncio {
 
                                             }catch (Exception err1){
                                                 Log.e("PeticionarioAdmin", "error al obtener el admin de este dispositivo: " + err1);
+                                                Toast.makeText(context, "No se ha podido enviar el aviso", Toast.LENGTH_SHORT).show();
                                             }
 
                                         }
@@ -157,6 +163,7 @@ public class classAnuncio {
 
                         }catch (Exception err1){
                             Log.e("PeticionarioAnuncioLength", "error al obtener todos los anuncios: " + err1);
+                            Toast.makeText(context, "No se ha podido enviar el aviso", Toast.LENGTH_SHORT).show();
                         }
 
                     }

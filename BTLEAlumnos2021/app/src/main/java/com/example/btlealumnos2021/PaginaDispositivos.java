@@ -130,19 +130,4 @@ public class PaginaDispositivos extends Fragment implements TextChangeListener {
         //la respuesta del escaneo se obtiene en onActivityResult
 
     } // ()
-
-    //----------------------------------------------------------------
-    // funciones para crear anuncio
-    //----------------------------------------------------------------
-    public void abrirPopUpCrearAnuncio(){
-
-    }
-    public void obtenerDatosCrearAnuncio(){
-
-    }
-    public void nuevoAnuncio(){
-
-        classanuncio.crearYPublicarAnuncio("GTI-3A", new POJOAnuncio());
-    }
-
 }

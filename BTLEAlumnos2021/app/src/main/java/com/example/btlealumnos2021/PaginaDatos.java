@@ -78,7 +78,7 @@ public class PaginaDatos extends Fragment {
                     //movil diego en wifi residencia 192.168.87.206
                     //pc diego en wifi residencia 192.168.85.210
                     //url de prueba = "http://192.168.85.210:8080/medicionEntreFechasYDispositivo" + "/" + "2023-10-15 01:00:00" + "/" + "2023-10-15 23:59:59"  + "/" + "FFFFFFFFFF"
-                    elPeticionario.hacerPeticionREST("GET",  "http://192.168.43.252:8080/medicionEntreFechasYDispositivo" + "/" + fechaDesdeString + "/" + fechaActualString  + "/" + nombreDispositivo, null,
+                    elPeticionario.hacerPeticionREST("GET",  "http://192.168.21.58:8080/medicionEntreFechasYDispositivo" + "/" + fechaDesdeString + "/" + fechaActualString  + "/" + nombreDispositivo, null,
                             new PeticionarioREST.RespuestaREST () {
                                 @Override
                                 public void callback(int codigo, String cuerpo) {
@@ -163,7 +163,7 @@ public class PaginaDatos extends Fragment {
                     Log.e("TimerEstimacionDatos", err.toString());
                 }
             }
-        }, 0,60000);
+        }, 0,120000);
         return v;
     }
 

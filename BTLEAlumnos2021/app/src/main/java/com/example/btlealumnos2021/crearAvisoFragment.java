@@ -80,7 +80,8 @@ public class crearAvisoFragment extends DialogFragment {
             @Override
             public void onClick(View view) {
                 anuncioACrear= new POJOAnuncio(tituloAnuncio.getText().toString(), contenidoAnuncio.getText().toString(), problemas.getText().toString(), "No leido");
-                utilidadesAnuncio.crearYPublicarAnuncio(nombreDispositivo, anuncioACrear);
+                utilidadesAnuncio.crearYPublicarAnuncio(nombreDispositivo, anuncioACrear, getContext());
+                dismiss();
             }
         });
 
