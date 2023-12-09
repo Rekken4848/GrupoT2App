@@ -1,5 +1,7 @@
 package com.example.btlealumnos2021;
 
+import static android.app.PendingIntent.getActivity;
+
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.le.BluetoothLeScanner;
@@ -18,6 +20,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -28,6 +31,8 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.btlealumnos2021.R;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 // -----------------------------------------------------------------------------------
 // @author: Hugo Martin Escrihuela
@@ -230,8 +235,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //SharedPreferences shrdPrefs = getPreferences(MODE_PRIVATE);
         //String valorAMostrar = shrdPrefs.getString("NombreDispositivo", "GTI-3A");
         //textoNombre.setText(valorAMostrar);
-        SharedPreferences shrdPrefs = getPreferences(MODE_PRIVATE);
-        String nombreDispositivo = shrdPrefs.getString("NombreDispositivo", "GTI-3A");
+        shrdPrefs = getPreferences(MODE_PRIVATE);
         /*SharedPreferences shrdPrefs;
                 String nombreDispositivo;
                 try {
@@ -271,8 +275,47 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Other 'case' lines to check for other
         // permissions this app might request.
     } // ()
+
+
+    //----para el escaneo de qr -------
+    SharedPreferences shrdPrefs;
+    // --------------------------------------------------------------
+    // N, Lista<Texto>, Lista<N> --> onRequestPermissionsResult()
+    // --------------------------------------------------------------
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        //Log.d(ETIQUETA_LOG, "requestCode: " + String.valueOf(requestCode));
+        //obtenemos en un string el resultado del escaneo de qr
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode,resultCode,data);
+        String nombreObtenido = result.getContents();
+
+        Log.d("<<<>>>", "Datos de QR obtenidos:" + nombreObtenido);
+
+        //vamos a guardar este valor obtenido en la cache de la app
+        guardarEnCache(nombreObtenido);
+
+    } // ()
+
+    // --------------------------------------------------------------
+    // String --> guardarEnCache()
+    // --------------------------------------------------------------
+    public void guardarEnCache(String valor){
+
+        SharedPreferences.Editor editor = shrdPrefs.edit();
+        //crea un archivo xml donde almacena el dato en la ubicacion:
+        //data/com.example.btlealumnos2021/shared_prefs
+        editor.putString("NombreDispositivo", valor);
+        editor.commit();
+
+    } // ()
 } // class
 // --------------------------------------------------------------
 // --------------------------------------------------------------
 // --------------------------------------------------------------
 // --------------------------------------------------------------
+
+// hay direcciones ip para cambiar en
+// - PaginaDatos.java (1)
+// - classAnuncio.java (6)

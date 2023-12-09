@@ -78,7 +78,7 @@ public class PaginaDatos extends Fragment {
                     //movil diego en wifi residencia 192.168.87.206
                     //pc diego en wifi residencia 192.168.85.210
                     //url de prueba = "http://192.168.85.210:8080/medicionEntreFechasYDispositivo" + "/" + "2023-10-15 01:00:00" + "/" + "2023-10-15 23:59:59"  + "/" + "FFFFFFFFFF"
-                    elPeticionario.hacerPeticionREST("GET",  "http://192.168.43.252:8080/medicionEntreFechasYDispositivo" + "/" + fechaDesdeString + "/" + fechaActualString  + "/" + nombreDispositivo, null,
+                    elPeticionario.hacerPeticionREST("GET",  "http://192.168.21.58:8080/medicionEntreFechasYDispositivo" + "/" + fechaDesdeString + "/" + fechaActualString  + "/" + nombreDispositivo, null,
                             new PeticionarioREST.RespuestaREST () {
                                 @Override
                                 public void callback(int codigo, String cuerpo) {
@@ -163,7 +163,7 @@ public class PaginaDatos extends Fragment {
                     Log.e("TimerEstimacionDatos", err.toString());
                 }
             }
-        }, 0,60000);
+        }, 0,120000);
         return v;
     }
 
@@ -253,53 +253,5 @@ public class PaginaDatos extends Fragment {
         }
 
     } // ()
-    TextView textoNombre;
-    // --------------------------------------------------------------
-    // String --> guardarEnCache()
-    // --------------------------------------------------------------
-    public void guardarEnCache(String valor){
 
-        SharedPreferences shrdPrefs = getActivity().getPreferences(MODE_PRIVATE);
-        SharedPreferences.Editor editor = shrdPrefs.edit();
-        //crea un archivo xml donde almacena el dato en la ubicacion:
-        //data/com.example.btlealumnos2021/shared_prefs
-        editor.putString("NombreDispositivo", valor);
-        editor.commit();
-
-        //para este sprint mostramos el dato guardado  en el textview para comprobar que funciona
-        String valorAMostrar = shrdPrefs.getString("NombreDispositivo", "GTI-3A");
-        //textoNombre.setText(valorAMostrar);
-
-    } // ()
-
-    // --------------------------------------------------------------
-    // --------------------------------------------------------------
-    public void abrirEscaneoQr(View view){
-        Log.d(ETIQUETA_LOG, " boton vincular sensor con qr Pulsado");
-        Log.d(ETIQUETA_LOG, " Empezamos escaneo de qr con camara");
-
-        //abrimos la camara con la libreria de escaneo de qr zxing
-        new IntentIntegrator(getActivity()).initiateScan();
-        //la respuesta del escaneo se obtiene en onActivityResult
-
-    } // ()
-
-    // --------------------------------------------------------------
-    // N, Lista<Texto>, Lista<N> --> onRequestPermissionsResult()
-    // --------------------------------------------------------------
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        //Log.d(ETIQUETA_LOG, "requestCode: " + String.valueOf(requestCode));
-        //obtenemos en un string el resultado del escaneo de qr
-        IntentResult result = IntentIntegrator.parseActivityResult(requestCode,resultCode,data);
-        String nombreObtenido = result.getContents();
-
-        Log.d(ETIQUETA_LOG, "Datos de QR obtenidos:" + nombreObtenido);
-
-        //vamos a guardar este valor obtenido en la cache de la app
-        guardarEnCache(nombreObtenido);
-
-    } // ()
 }
