@@ -1,5 +1,6 @@
 package com.example.btlealumnos2021;
 
+import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 import static android.content.Context.MODE_PRIVATE;
 
 import android.content.BroadcastReceiver;
@@ -12,7 +13,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -30,6 +34,9 @@ public class PaginaDispositivos extends Fragment implements TextChangeListener {
     TextView distancia_texto;
     ImageView recargarecycler;
     ImageView ImagenEscanerQR;
+    ImageView crearAnuncio;
+
+
     private Context context;
     private SharedPreferences shrdPrefs;
     private classAnuncio classanuncio;
@@ -54,20 +61,31 @@ public class PaginaDispositivos extends Fragment implements TextChangeListener {
         classanuncio = new classAnuncio();
         classanuncio.recogerAnunciosDeServidorYMostrarRecycler(nombreDispositivo, recyclerAnuncio, context);
 
+        //recargar el recycler
         recargarecycler = v.findViewById(R.id.recargarRecyclerImage);
         recargarecycler.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //classanuncio.recogerAnunciosDeServidorYMostrarRecycler(nombreDispositivo, recyclerAnuncio, context);
-                nuevoAnuncio();
+                classanuncio.recogerAnunciosDeServidorYMostrarRecycler(nombreDispositivo, recyclerAnuncio, context);
             }
         });
 
+        //abrir el escaner de qr
         ImagenEscanerQR = v.findViewById(R.id.imageViewEscanerQR);
         ImagenEscanerQR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 abrirEscaneoQr();
+            }
+        });
+
+        // abre popup crear anuncio
+        crearAnuncio = v.findViewById(R.id.imageViewCrearAnuncio);
+        crearAnuncio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                crearAvisoFragment dialogoCrearAviso = new crearAvisoFragment();
+                dialogoCrearAviso.show(getFragmentManager(), "Dialogo crear Anuncio");
             }
         });
 
@@ -116,7 +134,14 @@ public class PaginaDispositivos extends Fragment implements TextChangeListener {
     //----------------------------------------------------------------
     // funciones para crear anuncio
     //----------------------------------------------------------------
+    public void abrirPopUpCrearAnuncio(){
+
+    }
+    public void obtenerDatosCrearAnuncio(){
+
+    }
     public void nuevoAnuncio(){
+
         classanuncio.crearYPublicarAnuncio("GTI-3A", new POJOAnuncio());
     }
 

@@ -103,10 +103,10 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView7" />
+            app:layout_constraintTop_toBottomOf="@+id/imageViewCrearAnuncio" />
 
         <ImageView
-            android:id="@+id/imageView7"
+            android:id="@+id/imageViewCrearAnuncio"
             android:layout_width="46dp"
             android:layout_height="46dp"
             android:layout_marginTop="8dp"
@@ -121,7 +121,7 @@
             android:layout_height="46dp"
             android:src="@drawable/actualizar"
             app:layout_constraintBottom_toTopOf="@+id/recyclerView"
-            app:layout_constraintEnd_toStartOf="@+id/imageView7"
+            app:layout_constraintEnd_toStartOf="@+id/imageViewCrearAnuncio"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

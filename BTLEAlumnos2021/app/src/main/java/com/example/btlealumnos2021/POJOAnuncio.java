@@ -8,6 +8,17 @@ public class POJOAnuncio {
     private String estado;
 
     public POJOAnuncio(){}
+    public POJOAnuncio(String titulo, String contenido, String problemas){
+        this.titulo=titulo;
+        this.contenido=contenido;
+        this.problemas=problemas;
+    }
+    public POJOAnuncio(String titulo, String contenido, String problemas, String estado){
+        this.titulo=titulo;
+        this.contenido=contenido;
+        this.problemas=problemas;
+        this.estado=estado;
+    }
 
     public POJOAnuncio(String titulo, String contenido, String problemas, String estado, int anuncio_id){
         this.anuncio_id=anuncio_id;

@@ -96,7 +96,7 @@ public class classAnuncio {
                                                 //creamos el anuncio
                                                 PeticionarioREST elPeticionario3 = new PeticionarioREST();
                                                 elPeticionario3.hacerPeticionREST("POST",  "http://192.168.21.58:8080/anuncio",
-                                                        "{ \"contenido\": " + anuncioAPublicar.getContenido() + ", \"titulo\": " + anuncioAPublicar.getTitulo() + ", \"problemas\": \"" + anuncioAPublicar.getProblemas() + "\", \"estado\": \"" + anuncioAPublicar.getEstado() + "\"}",
+                                                        "{ \"contenido\": \"" + anuncioAPublicar.getContenido() + "\", \"titulo\": \"" + anuncioAPublicar.getTitulo() + "\", \"problemas\": \"" + anuncioAPublicar.getProblemas() + "\", \"estado\": \"" + anuncioAPublicar.getEstado() + "\"}",
                                                         new PeticionarioREST.RespuestaREST () {
                                                             @Override
                                                             public void callback(int codigo, String cuerpo) {
@@ -106,7 +106,7 @@ public class classAnuncio {
                                                                     //creamos el dispoditivo_anuncio
                                                                     PeticionarioREST elPeticionario4 = new PeticionarioREST();
                                                                     elPeticionario4.hacerPeticionREST("POST",  "http://192.168.21.58:8080/dispositivo_anuncio",
-                                                                            "{ \"dispositivo_id\": " + nombreDispositivo + ", \"anuncio_id\": " + idNuevoAnuncio + "\"}",
+                                                                            "{ \"dispositivo_id\": \"" + nombreDispositivo + "\", \"anuncio_id\": \"" + idNuevoAnuncio + "\"}",
                                                                             new PeticionarioREST.RespuestaREST () {
                                                                                 @Override
                                                                                 public void callback(int codigo, String cuerpo) {
@@ -117,18 +117,13 @@ public class classAnuncio {
                                                                                         //creamos el admin_anuncio
                                                                                         PeticionarioREST elPeticionario5 = new PeticionarioREST();
                                                                                         elPeticionario5.hacerPeticionREST("POST",  "http://192.168.21.58:8080/admin_anuncio",
-                                                                                                "{ \"dni_admin\": " + DNIAdmin + ", \"anuncio_id\": " + idNuevoAnuncio + "\"}",
+                                                                                                "{ \"dni_admin\": \"" + DNIAdmin + "\", \"anuncio_id\": \"" + idNuevoAnuncio + "\"}",
                                                                                                 new PeticionarioREST.RespuestaREST () {
                                                                                                     @Override
                                                                                                     public void callback(int codigo, String cuerpo) {
                                                                                                         Log.d( "Post AnuncioAdmin", "codigo = " + codigo + "\n" + cuerpo);
 
-                                                                                                        try {
-
-
-                                                                                                        }catch (Exception err1){
-                                                                                                            Log.e("Post AnuncioAdmin", "error al hacer post y crear anuncio: " + err1);
-                                                                                                        }
+                                                                                                        //aqui se ha añadido correctamente, avisar de alguna manera al usuario
 
                                                                                                     }
                                                                                                 }
