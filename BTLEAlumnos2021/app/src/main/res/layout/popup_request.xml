@@ -8,7 +8,7 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="478dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
@@ -16,7 +16,7 @@
         android:layout_marginStart="64dp"
         android:layout_marginTop="@android:dimen/notification_large_icon_width"
         android:layout_marginEnd="64dp"
-        android:layout_marginBottom="189dp"
+        android:layout_marginBottom="347dp"
         android:background="@drawable/contenedorpopups"
         android:orientation="vertical">
 
@@ -39,6 +39,7 @@
                 android:id="@+id/requestTitle"
                 android:layout_width="match_parent"
                 android:layout_height="51dp"
+                android:fontFamily="@font/robotoblack"
                 android:gravity="center"
                 android:text="Contactar con Ayuda"
                 android:textSize="16sp"
@@ -53,6 +54,7 @@
             android:id="@+id/textView3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/robotolight"
             android:gravity="center"
             android:text="Informa del problema que estas teniendo" />
 
@@ -67,14 +69,17 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="314dp" />
+            android:layout_height="314dp"
+            android:hint="Información de la situación" />
 
         <Button
             android:id="@+id/buttonrequest"
-            android:layout_width="84dp"
-            android:layout_height="37dp"
+            android:layout_width="88dp"
+            android:layout_height="36dp"
             android:layout_gravity="right"
+            android:layout_marginTop="8dp"
             android:layout_marginRight="16dp"
+            android:layout_marginBottom="8dp"
             android:background="@drawable/fondo_botones"
             android:backgroundTint="#80CDB9"
             android:gravity="center"
