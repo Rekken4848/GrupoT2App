@@ -5,15 +5,20 @@ import static android.content.Context.MODE_PRIVATE;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -34,6 +39,8 @@ public class PaginaDatos extends Fragment {
     TextView valorTemperatura;
     private SharedPreferences shrdPrefs;
     private static final String ETIQUETA_LOG = ">>>>";
+    private WebView webView;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +54,25 @@ public class PaginaDatos extends Fragment {
         valorOzono=v.findViewById(R.id.valorOzono);
         valorCO2=v.findViewById(R.id.valorCO2);
         valorTemperatura=v.findViewById(R.id.valorTemperatura);
+
+        webView = v.findViewById(R.id.adaptadorMapa);
+        WebSettings webSettings = webView.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+
+        ViewPager2 viewPager2 = ((MainActivity) getActivity()).viewPager;
+        viewPager2.setUserInputEnabled(false);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            WebView.setWebContentsDebuggingEnabled(true);
+        }
+
+        // Permitir zoom
+        webSettings.setBuiltInZoomControls(true);
+        webSettings.setDisplayZoomControls(false);
+
+        // Cargar la página web con el mapa Leaflet
+        webView.loadUrl("file:///android_asset/mapa.html");
+        webView.setWebChromeClient(new WebChromeClient());
 
         Timer timer= new Timer();
         timer.schedule(new TimerTask() {

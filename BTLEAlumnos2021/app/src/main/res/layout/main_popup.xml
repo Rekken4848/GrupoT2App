@@ -2,21 +2,20 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#D6D6D6">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="384dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="64dp"
-        android:layout_marginTop="112dp"
-        android:layout_marginEnd="64dp"
-        android:layout_marginBottom="235dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentBottom="false"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="0dp"
         android:background="@drawable/contenedorpopups"
         android:orientation="vertical">
 
@@ -26,7 +25,7 @@
             android:layout_height="54dp">
 
             <ImageView
-                android:id="@+id/imageView12"
+                android:id="@+id/exit"
                 android:layout_width="19dp"
                 android:layout_height="22dp"
                 android:layout_marginTop="8dp"
@@ -64,7 +63,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="72dp"
-                android:text="Fuerza de la Señal:"
+                android:text="Distancia sonda:"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -74,7 +73,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="TextView"
                 app:layout_constraintStart_toEndOf="@+id/textView6"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -105,7 +103,6 @@
                 android:id="@+id/lastdatetime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TextView"
                 app:layout_constraintBottom_toBottomOf="@+id/imageView2"
                 app:layout_constraintEnd_toEndOf="@+id/imageView2"
                 app:layout_constraintStart_toStartOf="@+id/imageView2"
@@ -117,14 +114,14 @@
             android:layout_width="match_parent"
             android:layout_height="49dp"
             android:gravity="center"
-            android:text="TextView" />
+            android:text="Localización no disponible" />
 
         <TextView
             android:id="@+id/coordinates"
             android:layout_width="match_parent"
             android:layout_height="51dp"
             android:gravity="center"
-            android:text="TextView" />
+            android:text="Coordenadas no registradas" />
 
     </LinearLayout>
 
