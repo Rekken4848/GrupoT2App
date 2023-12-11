@@ -17,6 +17,8 @@ public class LoginActivity extends AppCompatActivity {
     private static final String PREF_NAME = "MyPreferences";
     private static final String KEY_LOGGED_IN = "isLoggedIn";
 
+    IPUnificada ipunificada = new IPUnificada();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,8 +65,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void checkCredentialsAndLogin(String id, String email, String postalcode) { // 192.168.43.252
-        String urlPersona = "http://192.168.0.24:8080/persona/" + id;
-        String urlDireccion = "http://192.168.0.24:8080/direccion/" + id;
+        String urlPersona = ipunificada.getIpServidor() + "/persona/" + id;
+        String urlDireccion = ipunificada.getIpServidor() + "/direccion/" + id;
 
         PeticionarioREST elPeticionarioPersona = new PeticionarioREST();
         elPeticionarioPersona.hacerPeticionREST("GET", urlPersona, null, new PeticionarioREST.RespuestaREST() {

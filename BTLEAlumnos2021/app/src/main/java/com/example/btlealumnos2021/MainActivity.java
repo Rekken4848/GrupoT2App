@@ -333,7 +333,3 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 // --------------------------------------------------------------
 // --------------------------------------------------------------
 // --------------------------------------------------------------
-
-// hay direcciones ip para cambiar en
-// - PaginaDatos.java (1)
-// - classAnuncio.java (6)

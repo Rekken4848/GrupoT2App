@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class RegisterActivity extends AppCompatActivity {
 
+    IPUnificada ipUnificada = new IPUnificada();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +40,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                 // Perform the POST request to 'http://192.168.43.252:8080/Persona'
                 PeticionarioREST elPeticionarioPersona = new PeticionarioREST();
-                elPeticionarioPersona.hacerPeticionREST("POST", "http://192.168.0.24:8080/Persona", requestBodyPersona,
+                elPeticionarioPersona.hacerPeticionREST("POST", ipUnificada.getIpServidor() + "/Persona", requestBodyPersona,
                         new PeticionarioREST.RespuestaREST () {
                             @Override
                             public void callback(int codigoPersona, String cuerpoPersona) {
@@ -57,7 +58,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                 // Perform the POST request to 'http://192.168.43.252:8080/Direccion'
                 PeticionarioREST elPeticionarioDireccion = new PeticionarioREST();
-                elPeticionarioDireccion.hacerPeticionREST("POST", "http://192.168.0.24:8080/Direccion", requestBodyDireccion,
+                elPeticionarioDireccion.hacerPeticionREST("POST", ipUnificada.getIpServidor() + "/Direccion", requestBodyDireccion,
                         new PeticionarioREST.RespuestaREST () {
                             @Override
                             public void callback(int codigoDireccion, String cuerpoDireccion) {

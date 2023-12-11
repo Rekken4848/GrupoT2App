@@ -23,6 +23,8 @@ import java.util.Locale;
 public class classAnuncio {
     public ArrayList<POJOAnuncio> listaAnuncios;
 
+    IPUnificada ipUnificada = new IPUnificada();
+
     public classAnuncio() {
     }
     public classAnuncio(ArrayList<POJOAnuncio> listaAnuncios) {
@@ -40,7 +42,7 @@ public class classAnuncio {
         //movil diego en wifi compartido 10.39.80.255
         //pc diego en wifi compartido 192.168.21.58
         //url de prueba = "http://192.168.85.210:8080/medicionEntreFechasYDispositivo" + "/" + "2023-10-15 01:00:00" + "/" + "2023-10-15 23:59:59"  + "/" + "FFFFFFFFFF"
-        elPeticionario.hacerPeticionREST("GET",  "http://192.168.21.58:8080/anuncioDispositivo" + "/" + nombreDispositivo, null,
+        elPeticionario.hacerPeticionREST("GET",  ipUnificada.getIpServidor() + "/anuncioDispositivo" + "/" + nombreDispositivo, null,
                 new PeticionarioREST.RespuestaREST () {
                     @Override
                     public void callback(int codigo, String cuerpo) {
@@ -68,7 +70,7 @@ public class classAnuncio {
     public void crearYPublicarAnuncio(String nombreDispositivo, POJOAnuncio anuncioAPublicar, Context context){
         PeticionarioREST elPeticionario = new PeticionarioREST();
         //obtenemos todos los anuncios para saber la id del anuncio que crearemos ahora y poder crear Dispositivo_Anuncio
-        elPeticionario.hacerPeticionREST("GET",  "http://192.168.21.58:8080/todosAnuncios", null,
+        elPeticionario.hacerPeticionREST("GET",  ipUnificada.getIpServidor() + "/todosAnuncios", null,
                 new PeticionarioREST.RespuestaREST () {
                     @Override
                     public void callback(int codigo, String cuerpo) {
@@ -82,7 +84,7 @@ public class classAnuncio {
 
                             PeticionarioREST elPeticionario2 = new PeticionarioREST();
                             //obtenemos todos los anuncios para saber la id del anuncio que crearemos ahora y poder crear Dispositivo_Anuncio
-                            elPeticionario2.hacerPeticionREST("GET",  "http://192.168.21.58:8080/adminDispositivo" + "/" + nombreDispositivo, null,
+                            elPeticionario2.hacerPeticionREST("GET",  ipUnificada.getIpServidor() + "/adminDispositivo" + "/" + nombreDispositivo, null,
                                     new PeticionarioREST.RespuestaREST () {
                                         @Override
                                         public void callback(int codigo, String cuerpo) {
@@ -97,7 +99,7 @@ public class classAnuncio {
 
                                                 //creamos el anuncio
                                                 PeticionarioREST elPeticionario3 = new PeticionarioREST();
-                                                elPeticionario3.hacerPeticionREST("POST",  "http://192.168.21.58:8080/anuncio",
+                                                elPeticionario3.hacerPeticionREST("POST",  ipUnificada.getIpServidor() + "/anuncio",
                                                         "{ \"contenido\": \"" + anuncioAPublicar.getContenido() + "\", \"titulo\": \"" + anuncioAPublicar.getTitulo() + "\", \"problemas\": \"" + anuncioAPublicar.getProblemas() + "\", \"estado\": \"" + anuncioAPublicar.getEstado() + "\"}",
                                                         new PeticionarioREST.RespuestaREST () {
                                                             @Override
@@ -107,7 +109,7 @@ public class classAnuncio {
                                                                 try {
                                                                     //creamos el dispoditivo_anuncio
                                                                     PeticionarioREST elPeticionario4 = new PeticionarioREST();
-                                                                    elPeticionario4.hacerPeticionREST("POST",  "http://192.168.21.58:8080/dispositivo_anuncio",
+                                                                    elPeticionario4.hacerPeticionREST("POST",  ipUnificada.getIpServidor() + "/dispositivo_anuncio",
                                                                             "{ \"dispositivo_id\": \"" + nombreDispositivo + "\", \"anuncio_id\": \"" + idNuevoAnuncio + "\"}",
                                                                             new PeticionarioREST.RespuestaREST () {
                                                                                 @Override
@@ -118,7 +120,7 @@ public class classAnuncio {
 
                                                                                         //creamos el admin_anuncio
                                                                                         PeticionarioREST elPeticionario5 = new PeticionarioREST();
-                                                                                        elPeticionario5.hacerPeticionREST("POST",  "http://192.168.21.58:8080/admin_anuncio",
+                                                                                        elPeticionario5.hacerPeticionREST("POST",  ipUnificada.getIpServidor() + "/admin_anuncio",
                                                                                                 "{ \"dni_admin\": \"" + DNIAdmin + "\", \"anuncio_id\": \"" + idNuevoAnuncio + "\"}",
                                                                                                 new PeticionarioREST.RespuestaREST () {
                                                                                                     @Override
