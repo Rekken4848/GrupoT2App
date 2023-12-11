@@ -23,7 +23,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
-        /*acceptButton.setOnClickListener(new View.OnClickListener() {
+        acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(RegisterActivity.this, "Registration Accepted", Toast.LENGTH_SHORT).show();
@@ -33,7 +33,9 @@ public class RegisterActivity extends AppCompatActivity {
                 String correo = getIntent().getStringExtra("correo");
                 String codigoPostal = getIntent().getStringExtra("codigo_postal");
 
-                String requestBodyPersona = "{ \"dni\": \"" + dni + "\", \"correo\": \"" + correo + "\"}";
+                String requestBodyPersona = "{ \"dni\": \"" + dni + "\", \"nombre\": \"\", \"apellidos\": \"\", \"telefono\": \"\", \"correo\": \"" + correo + "\"}";
+
+
 
                 // Perform the POST request to 'http://192.168.43.252:8080/Persona'
                 PeticionarioREST elPeticionarioPersona = new PeticionarioREST();
@@ -51,7 +53,7 @@ public class RegisterActivity extends AppCompatActivity {
                             }
                         }
                 );
-                String requestBodyDireccion = "{ \"codigo_postal\": \"" + codigoPostal + "\"}";
+                String requestBodyDireccion = "{ \"dni\": \"" + dni + "\", \"codigo_postal\": \"" + codigoPostal + "\", \"ccaa\": \"\", \"provincia\": \"\", \"calle\": \"\"}";
 
                 // Perform the POST request to 'http://192.168.43.252:8080/Direccion'
                 PeticionarioREST elPeticionarioDireccion = new PeticionarioREST();
@@ -72,7 +74,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                 finish();
             }
-        });*/
+        });
 
 
     }
