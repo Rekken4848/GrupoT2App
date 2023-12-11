@@ -40,6 +40,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final int CODIGO_PETICION_PERMISOS = 11223344;
 
     // --------------------------------------------------------------
+    private SharedPreferences sharedPreferences;
+    private static final String PREF_NAME = "MyPreferences";
+    private static final String KEY_LOGGED_IN = "isLoggedIn";
     // --------------------------------------------------------------
     private BluetoothLeScanner elEscanner;
 
@@ -197,21 +200,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
 
-        Log.d(ETIQUETA_LOG, " onCreate(): empieza ");
+        // Check if the user is already logged in
+        boolean isLoggedIn = sharedPreferences.getBoolean(KEY_LOGGED_IN, false);
 
-        for(int i = 0; i < btn.length; i++){
-            btn[i] = (Button) findViewById(btn_id[i]);
-            //btn[i].setBackgroundColor(Color.rgb(207, 207, 207));
-            btn[i].setOnClickListener(this);
-        }
+        if (!isLoggedIn) {
+            // If user is not logged in, redirect to LoginActivity
+            Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(loginIntent);
+            finish(); // Close this activity so that user cannot go back to it with back button
+        } else {
+            // User is already logged in, proceed with your main activity logic
+            setContentView(R.layout.activity_main);
 
-        btn_unfocus = btn[0];
+            Log.d(ETIQUETA_LOG, "onCreate(): empieza");
 
-        //Pestañas
-        viewPager = findViewById(R.id.viewPagerMain);
-        viewPager.setAdapter(new MiPagerAdapter(this));
+
+            for (int i = 0; i < btn.length; i++) {
+                btn[i] = (Button) findViewById(btn_id[i]);
+                btn[i].setOnClickListener(this);
+            }
+
+
+            btn_unfocus = btn[0];
+
+            //Pestañas
+            viewPager = findViewById(R.id.viewPagerMain);
+            viewPager.setAdapter(new MiPagerAdapter(this));
 
         /*boton = findViewById(R.id.botonBuscarSensor);
         botonEscaner =findViewById(R.id.vincularqr);
@@ -224,14 +240,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });*/
 
-        inicializarBlueTooth();
+            inicializarBlueTooth();
 
-        //para este sprint mostramos el dato guardado  en el textview para comprobar que funciona
-        //SharedPreferences shrdPrefs = getPreferences(MODE_PRIVATE);
-        //String valorAMostrar = shrdPrefs.getString("NombreDispositivo", "GTI-3A");
-        //textoNombre.setText(valorAMostrar);
-        SharedPreferences shrdPrefs = getPreferences(MODE_PRIVATE);
-        String nombreDispositivo = shrdPrefs.getString("NombreDispositivo", "GTI-3A");
+            //para este sprint mostramos el dato guardado  en el textview para comprobar que funciona
+            //SharedPreferences shrdPrefs = getPreferences(MODE_PRIVATE);
+            //String valorAMostrar = shrdPrefs.getString("NombreDispositivo", "GTI-3A");
+            //textoNombre.setText(valorAMostrar);
+            SharedPreferences shrdPrefs = getPreferences(MODE_PRIVATE);
+            String nombreDispositivo = shrdPrefs.getString("NombreDispositivo", "GTI-3A");
         /*SharedPreferences shrdPrefs;
                 String nombreDispositivo;
                 try {
@@ -242,7 +258,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Log.e("Sprint2", error1.toString());
                 }*/
 
-        Log.d(ETIQUETA_LOG, " onCreate(): termina ");
+            Log.d(ETIQUETA_LOG, " onCreate(): termina ");
+        }
     } // onCreate()
 
     // --------------------------------------------------------------
