@@ -1,19 +1,33 @@
 package com.example.btlealumnos2021;
 
+import static android.content.Context.LAYOUT_INFLATER_SERVICE;
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
+
+import java.util.ArrayList;
 
 public class PaginaDispositivos extends Fragment implements TextChangeListener {
     ConstraintLayout overlay;
@@ -29,6 +43,14 @@ public class PaginaDispositivos extends Fragment implements TextChangeListener {
     ImageView exit2;
 
     TextView distancia_texto;
+    ImageView recargarecycler;
+    ImageView ImagenEscanerQR;
+    ImageView crearAnuncio;
+
+
+    private Context context;
+    private SharedPreferences shrdPrefs;
+    private classAnuncio classanuncio;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,6 +121,45 @@ public class PaginaDispositivos extends Fragment implements TextChangeListener {
 
         distancia_texto = v.findViewById(R.id.singlastrength);
 
+        context = this.getContext();
+
+        shrdPrefs = getActivity().getSharedPreferences("MainActivity", MODE_PRIVATE);
+        String nombreDispositivo = shrdPrefs.getString("NombreDispositivo", "GTI-3A");
+
+        RecyclerView recyclerAnuncio = v.findViewById(R.id.recyclerView);
+        recyclerAnuncio.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
+
+        classanuncio = new classAnuncio();
+        classanuncio.recogerAnunciosDeServidorYMostrarRecycler(nombreDispositivo, recyclerAnuncio, context);
+
+        //recargar el recycler
+        recargarecycler = v.findViewById(R.id.recargarRecyclerImage);
+        recargarecycler.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                classanuncio.recogerAnunciosDeServidorYMostrarRecycler(nombreDispositivo, recyclerAnuncio, context);
+            }
+        });
+
+        //abrir el escaner de qr
+        ImagenEscanerQR = v.findViewById(R.id.imageViewEscanerQR);
+        ImagenEscanerQR.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                abrirEscaneoQr();
+            }
+        });
+
+        // abre popup crear anuncio
+        crearAnuncio = v.findViewById(R.id.imageViewCrearAnuncio);
+        crearAnuncio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                crearAvisoFragment dialogoCrearAviso = new crearAvisoFragment();
+                dialogoCrearAviso.show(getFragmentManager(), "Dialogo crear Anuncio");
+            }
+        });
+
         // Registra el receptor de difusión
         broadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -126,4 +187,18 @@ public class PaginaDispositivos extends Fragment implements TextChangeListener {
         // Desregistra el receptor de difusión al destruir la actividad
         LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(broadcastReceiver);
     }
+
+
+    // --------------------------------------------------------------
+    // la respuesta a este intent se recogen en MainActivity por ser esa una actividad y esto un fragment
+    // --------------------------------------------------------------
+    public void abrirEscaneoQr(){
+        Log.d("<<<>>>", " boton vincular sensor con qr Pulsado");
+        Log.d("<<<>>>", " Empezamos escaneo de qr con camara");
+
+        //abrimos la camara con la libreria de escaneo de qr zxing
+        new IntentIntegrator(getActivity()).initiateScan();
+        //la respuesta del escaneo se obtiene en onActivityResult
+
+    } // ()
 }

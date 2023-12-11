@@ -28,24 +28,47 @@
 
         <TextView
             android:id="@+id/contendiorequesttitulo"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="TextView"
-            android:textSize="16sp"
+            android:text="Titulo"
+            android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.102"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/contendiorequest"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TextView"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:id="@+id/estadoAnuncio"
+            android:layout_width="0dp"
+            android:layout_height="19dp"
+            android:text="Estado"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/contendiorequesttitulo" />
+
+        <TextView
+            android:id="@+id/contenidoAnuncio"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:text="Contenido"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/problemasAnuncio"
+            app:layout_constraintTop_toBottomOf="@+id/estadoAnuncio" />
+
+        <TextView
+            android:id="@+id/problemasAnuncio"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:text="Problemas"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/contenidoAnuncio"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/estadoAnuncio"
+            app:layout_constraintVertical_bias="0.0" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

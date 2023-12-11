@@ -26,14 +26,18 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import java.lang.reflect.Type;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import android.content.SharedPreferences;
 
 public class PaginaDatos extends Fragment {
+    IPUnificada ipUnificada = new IPUnificada();
     TextView valorOzono;
     TextView valorCO2;
     TextView valorTemperatura;
@@ -49,8 +53,7 @@ public class PaginaDatos extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_home, container, false);
-
-
+        
         valorOzono=v.findViewById(R.id.valorOzono);
         valorCO2=v.findViewById(R.id.valorCO2);
         valorTemperatura=v.findViewById(R.id.valorTemperatura);
@@ -79,108 +82,115 @@ public class PaginaDatos extends Fragment {
             @Override
             public void run() {
                 PeticionarioREST elPeticionario = new PeticionarioREST();
-                /*SharedPreferences shrdPrefs;
-                String nombreDispositivo;
+
+                Log.d("Shared preferences", "voy a recoger el shared");
                 try {
-                    shrdPrefs = getActivity().getPreferences(MODE_PRIVATE);
-                    Log.d( "Sprint2", shrdPrefs.toString());
-                    nombreDispositivo = shrdPrefs.getString("NombreDispositivo", "GTI-3A");
-                } catch(Exception error1) {
-                    Log.e("Sprint2", error1.toString());
-                }*/
+                    shrdPrefs = getActivity().getSharedPreferences("MainActivity", MODE_PRIVATE);
+                    String nombreDispositivo = shrdPrefs.getString("NombreDispositivo", "GTI-3A");
 
-                shrdPrefs = getActivity().getSharedPreferences("MainActivity", MODE_PRIVATE);
-                String nombreDispositivo = shrdPrefs.getString("NombreDispositivo", "GTI-3A");
+                    Log.d("Shared preferences", "he recogido correctamente el shared");
 
-                long fechaActualMilis = System.currentTimeMillis();
-                long fechaDesdeMilis = fechaActualMilis-86400000;
+                    long fechaActualMilis = System.currentTimeMillis();
+                    long fechaDesdeMilis = fechaActualMilis-86400000;
 
-                String fechaActualString = new Date(fechaActualMilis).toString();
-                String fechaDesdeString = new Date(fechaDesdeMilis).toString();
+                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault());
 
-                //IP movil http://192.168.43.252:8080/
-                //IP casa http://192.168.1.21:8080/
-                //movil diego en wifi residencia 192.168.87.206
-                //pc diego en wifi residencia 192.168.85.210
-                //url de prueba = "http://192.168.85.210:8080/medicionEntreFechasYDispositivo" + "/" + "2023-10-15 01:00:00" + "/" + "2023-10-15 23:59:59"  + "/" + "FFFFFFFFFF"
-                elPeticionario.hacerPeticionREST("GET",  "http://192.168.43.252:8080/medicionEntreFechasYDispositivo" + "/" + fechaDesdeString + "/" + fechaActualString  + "/" + nombreDispositivo, null,
-                        new PeticionarioREST.RespuestaREST () {
-                            @Override
-                            public void callback(int codigo, String cuerpo) {
-                                Log.d( "pruebasPeticionario", "codigo = " + codigo + "\n" + cuerpo);
+                    String fechaActualString = df.format(new Date(fechaActualMilis));
+                    String fechaDesdeString = df.format(new Date(fechaDesdeMilis));
+                    Log.d( "PeticionarioEstimacion", fechaActualString);
+                    Log.d( "PeticionarioEstimacion", fechaDesdeString);
 
-                                //cuerpo contiene la/las mediciones obtenidas
-                                Type listType = new TypeToken<List<POJOMedicion>>(){}.getType();
-                                Gson gson = new Gson();
-                                List<POJOMedicion> listaMediciones = gson.fromJson(cuerpo, listType);
-                                float valorFinalTemp=0;
-                                float valorFinalOzono=0;
-                                float valorFinalCO2=0;
-                                int contadorTemp=0;
-                                int contadorOzono=0;
-                                int contadorCO2=0;
-                                try{
-                                    for (POJOMedicion MedicionObjeto : listaMediciones) {
-                                        System.out.println("ID: " + MedicionObjeto.getId());
-                                        System.out.println("Valor: " + MedicionObjeto.getValor());
-                                        System.out.println("Tipo_Valor: " + MedicionObjeto.getTipo_valor_id());
-                                        System.out.println("Fecha: " + MedicionObjeto.getFecha());
-                                        System.out.println("Lugar: " + MedicionObjeto.getLugar());
-                                        System.out.println("------");
+                    //IP movil http://192.168.43.252:8080/
+                    //IP casa http://192.168.1.21:8080/
+                    //movil diego en wifi residencia 192.168.87.206
+                    //pc diego en wifi residencia 192.168.85.210
+                    //url de prueba = "http://192.168.85.210:8080/medicionEntreFechasYDispositivo" + "/" + "2023-10-15 01:00:00" + "/" + "2023-10-15 23:59:59"  + "/" + "FFFFFFFFFF"
+                    elPeticionario.hacerPeticionREST("GET",  ipUnificada.getIpServidor() + "/medicionEntreFechasYDispositivo" + "/" + fechaDesdeString + "/" + fechaActualString  + "/" + nombreDispositivo, null,
+                            new PeticionarioREST.RespuestaREST () {
+                                @Override
+                                public void callback(int codigo, String cuerpo) {
+                                    Log.d( "PeticionarioEstimacion", "codigo = " + codigo + "\n" + cuerpo);
 
-                                        float esteValor = MedicionObjeto.getValor();
+                                    try {
+                                        //cuerpo contiene la/las mediciones obtenidas
+                                        Type listType = new TypeToken<List<POJOMedicion>>(){}.getType();
+                                        Gson gson = new Gson();
+                                        List<POJOMedicion> listaMediciones = gson.fromJson(cuerpo, listType);
+                                        float valorFinalTemp=0;
+                                        float valorFinalOzono=0;
+                                        float valorFinalCO2=0;
+                                        int contadorTemp=0;
+                                        int contadorOzono=0;
+                                        int contadorCO2=0;
 
-                                        switch (MedicionObjeto.getTipo_valor_id()){
-                                            case 0: //caso temperatura
-                                                valorFinalTemp=valorFinalTemp+esteValor;
-                                                contadorTemp++;
-                                                break;
+                                        for (POJOMedicion MedicionObjeto : listaMediciones) {
+                                            System.out.println("ID: " + MedicionObjeto.getId());
+                                            System.out.println("Valor: " + MedicionObjeto.getValor());
+                                            System.out.println("Tipo_Valor: " + MedicionObjeto.getTipo_valor_id());
+                                            System.out.println("Fecha: " + MedicionObjeto.getFecha());
+                                            System.out.println("Lugar: " + MedicionObjeto.getLugar());
+                                            System.out.println("------");
 
-                                            case 1: //caso ozono
-                                                valorFinalOzono=valorFinalOzono+esteValor;
-                                                contadorOzono++;
-                                                break;
+                                            float esteValor = MedicionObjeto.getValor();
 
-                                            case 6: //caso CO2
-                                                valorFinalCO2=valorFinalCO2+esteValor;
-                                                contadorCO2++;
-                                                break;
+                                            switch (MedicionObjeto.getTipo_valor_id()){
+                                                case 0: //caso temperatura
+                                                    valorFinalTemp=valorFinalTemp+esteValor;
+                                                    contadorTemp++;
+                                                    break;
+
+                                                case 1: //caso ozono
+                                                    valorFinalOzono=valorFinalOzono+esteValor;
+                                                    contadorOzono++;
+                                                    break;
+
+                                                case 6: //caso CO2
+                                                    valorFinalCO2=valorFinalCO2+esteValor;
+                                                    contadorCO2++;
+                                                    break;
+                                            }
                                         }
 
-                                    }
+                                        if (contadorTemp!=0){
+                                            float valorMedioTemp = valorFinalTemp/contadorTemp;
+                                            System.out.println("Temperatura" + valorMedioTemp);
+                                            compararConMedidasOficiales(0, valorMedioTemp);
+                                        } else{
+                                            compararConMedidasOficiales(0, -999); //ponemos un valor imposible para decirle a la funcion que de este valor no tenemos mediciones
+                                        }
 
-                                    if (contadorTemp!=0){
-                                        float valorMedioTemp = valorFinalTemp/contadorTemp;
-                                        System.out.println("Temperatura" + valorMedioTemp);
-                                        compararConMedidasOficiales(0, valorMedioTemp);
-                                    } else{
-                                        compararConMedidasOficiales(0, -999); //ponemos un valor imposible para decirle a la funcion que de este valor no tenemos mediciones
-                                    }
+                                        if (contadorOzono!=0){
+                                            float valorMedioOzono = valorFinalOzono/contadorOzono;
+                                            System.out.println("Ozono" + valorMedioOzono);
+                                            compararConMedidasOficiales(1, valorMedioOzono);
+                                        } else{
+                                            compararConMedidasOficiales(1, -999);
+                                        }
 
-                                    if (contadorOzono!=0){
-                                        float valorMedioOzono = valorFinalOzono/contadorOzono;
-                                        System.out.println("Ozono" + valorMedioOzono);
-                                        compararConMedidasOficiales(1, valorMedioOzono);
-                                    } else{
+                                        if (contadorCO2!=0){
+                                            float valorMedioCO2 = valorFinalCO2/contadorCO2;
+                                            System.out.println("CO2" + valorMedioCO2);
+                                            compararConMedidasOficiales(6, valorMedioCO2);
+                                        } else{
+                                            compararConMedidasOficiales(6, -999);
+                                        }
+
+                                    }catch (Exception err2){
+                                        compararConMedidasOficiales(0, -999);
                                         compararConMedidasOficiales(1, -999);
-                                    }
-
-                                    if (contadorCO2!=0){
-                                        float valorMedioCO2 = valorFinalCO2/contadorCO2;
-                                        System.out.println("CO2" + valorMedioCO2);
-                                        compararConMedidasOficiales(6, valorMedioCO2);
-                                    } else{
                                         compararConMedidasOficiales(6, -999);
+                                        Log.e("PeticionarioEstimacion", "error al mostrar los datos");
                                     }
-                                }catch(Exception error1) {
-                                    Log.e("Sprint2", error1.toString());
-                                }
 
+                                }
                             }
-                        }
-                );
+                    );
+
+                }catch (Exception err){
+                    Log.e("TimerEstimacionDatos", err.toString());
+                }
             }
-        }, 60000);
+        }, 0,120000);
         return v;
     }
 
@@ -232,7 +242,8 @@ public class PaginaDatos extends Fragment {
                 if (valor == -999 || valor == -999.0){
                     valorTemperatura.setText("No info");
                 } else{
-                    valorTemperatura.setText(valor + " ºC");
+                    DecimalFormat df = new DecimalFormat("###.#");
+                    valorTemperatura.setText(df.format(valor) + " ºC");
                 }
 
                 break;
@@ -269,53 +280,5 @@ public class PaginaDatos extends Fragment {
         }
 
     } // ()
-    TextView textoNombre;
-    // --------------------------------------------------------------
-    // String --> guardarEnCache()
-    // --------------------------------------------------------------
-    public void guardarEnCache(String valor){
 
-        SharedPreferences shrdPrefs = getActivity().getPreferences(MODE_PRIVATE);
-        SharedPreferences.Editor editor = shrdPrefs.edit();
-        //crea un archivo xml donde almacena el dato en la ubicacion:
-        //data/com.example.btlealumnos2021/shared_prefs
-        editor.putString("NombreDispositivo", valor);
-        editor.commit();
-
-        //para este sprint mostramos el dato guardado  en el textview para comprobar que funciona
-        String valorAMostrar = shrdPrefs.getString("NombreDispositivo", "GTI-3A");
-        //textoNombre.setText(valorAMostrar);
-
-    } // ()
-
-    // --------------------------------------------------------------
-    // --------------------------------------------------------------
-    public void abrirEscaneoQr(View view){
-        Log.d(ETIQUETA_LOG, " boton vincular sensor con qr Pulsado");
-        Log.d(ETIQUETA_LOG, " Empezamos escaneo de qr con camara");
-
-        //abrimos la camara con la libreria de escaneo de qr zxing
-        new IntentIntegrator(getActivity()).initiateScan();
-        //la respuesta del escaneo se obtiene en onActivityResult
-
-    } // ()
-
-    // --------------------------------------------------------------
-    // N, Lista<Texto>, Lista<N> --> onRequestPermissionsResult()
-    // --------------------------------------------------------------
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        //Log.d(ETIQUETA_LOG, "requestCode: " + String.valueOf(requestCode));
-        //obtenemos en un string el resultado del escaneo de qr
-        IntentResult result = IntentIntegrator.parseActivityResult(requestCode,resultCode,data);
-        String nombreObtenido = result.getContents();
-
-        Log.d(ETIQUETA_LOG, "Datos de QR obtenidos:" + nombreObtenido);
-
-        //vamos a guardar este valor obtenido en la cache de la app
-        guardarEnCache(nombreObtenido);
-
-    } // ()
 }

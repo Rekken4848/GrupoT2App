@@ -38,6 +38,7 @@
                 android:id="@+id/requestTitle"
                 android:layout_width="match_parent"
                 android:layout_height="51dp"
+                android:fontFamily="@font/robotoblack"
                 android:gravity="center"
                 android:text="Contactar con Ayuda"
                 android:textSize="16sp"
@@ -52,6 +53,7 @@
             android:id="@+id/textView3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/robotolight"
             android:gravity="center"
             android:text="Informa del problema que estas teniendo" />
 
@@ -64,16 +66,38 @@
             android:inputType="text"
             android:textSize="16sp" />
 
+        <EditText
+            android:id="@+id/problemforrequest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Resumen del problema"
+            android:inputType="text"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/editTextDescripcion"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:ems="10"
+            android:hint="Descripcion del problema"
+            android:gravity="start|top"
+            android:inputType="textMultiLine"
+            android:textSize="16sp"/>
+
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="314dp" />
+            android:layout_height="50dp"
+            android:hint="Descripcion del problema" />
 
         <Button
             android:id="@+id/buttonrequest"
             android:layout_width="95dp"
             android:layout_height="37dp"
             android:layout_gravity="right"
+            android:layout_marginTop="8dp"
             android:layout_marginRight="16dp"
+            android:layout_marginBottom="8dp"
             android:background="@drawable/fondo_botones"
             android:backgroundTint="#80CDB9"
             android:gravity="center"
