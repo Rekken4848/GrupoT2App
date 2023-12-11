@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/loginfondo">
+
+    <TextView
+        android:id="@+id/tituloLogin"
+        android:layout_width="match_parent"
+        android:layout_height="51dp"
+        android:layout_marginBottom="48dp"
+        android:fontFamily="@font/robotoblack"
+        android:gravity="center"
+        android:text="Acceder a la aplicación"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="172dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/textView11"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:fontFamily="@font/robotomedium"
+            android:gravity="center"
+            android:text="DNI" />
+
+        <EditText
+            android:id="@+id/dnilogin"
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="24dp"
+            android:ems="10"
+            android:fontFamily="@font/robotomedium"
+            android:inputType="text"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/textView10"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:fontFamily="@font/robotomedium"
+            android:gravity="center"
+            android:text="Correo" />
+
+        <EditText
+            android:id="@+id/correologin"
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="24dp"
+            android:ems="10"
+            android:fontFamily="@font/robotomedium"
+            android:inputType="text"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/textView8"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:fontFamily="@font/robotomedium"
+            android:gravity="center"
+            android:text="CP del trabajo" />
+
+        <EditText
+            android:id="@+id/cplogin"
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="24dp"
+            android:ems="10"
+            android:fontFamily="@font/robotomedium"
+            android:inputType="text"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/iniciarsesion"
+        android:layout_width="160dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/fondo_botones"
+        android:backgroundTint="#80CDB9"
+        android:fontFamily="@font/robotobold"
+        android:gravity="center"
+        android:text="Iniciar Sesión"
+        android:textAllCaps="false"
+        android:textColorLink="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"/>
+
+    <TextView
+        android:id="@+id/textView12"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:autoLink="web"
+        android:fontFamily="@font/robotolight"
+        android:gravity="center"
+        android:text="Leer términos y condiciones"
+        android:textColor="#3F51B5"
+        app:layout_constraintBottom_toTopOf="@+id/tandc"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Switch
+        android:id="@+id/tandc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:checked="false"
+        android:fontFamily="@font/robotolight"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:text="Acepto los términos y condiciones"
+        app:layout_constraintBottom_toTopOf="@+id/iniciarsesion"
+        app:layout_constraintEnd_toEndOf="@+id/iniciarsesion"
+        app:layout_constraintStart_toStartOf="@+id/iniciarsesion"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
