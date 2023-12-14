@@ -76,14 +76,14 @@
         app:layout_constraintEnd_toStartOf="@+id/imageViewEscanerQR"
         app:layout_constraintTop_toTopOf="@+id/imageViewEscanerQR" />-->
 
-    <ImageView
+    <!--<ImageView
         android:id="@+id/imageView10"
         android:layout_width="46dp"
         android:layout_height="46dp"
         android:layout_marginTop="8dp"
         android:src="@drawable/explorar"
         app:layout_constraintStart_toStartOf="@+id/imageView6"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />-->
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout2"

@@ -13,6 +13,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -45,11 +47,24 @@ public class PaginaDispositivos extends Fragment implements TextChangeListener {
     TextView distancia_texto;
     ImageView recargarecycler;
     ImageView ImagenEscanerQR;
-    ImageView crearAnuncio;
 
     TextView estadoDispositivo;
 
     RecyclerView recyclerAnuncio;
+
+    //para la creacion de anuncios
+
+    ImageView butonCerrar;
+    Button enviarAnuncio;
+
+    EditText tituloAnuncio;
+    EditText problemas;
+    EditText contenidoAnuncio;
+
+    POJOAnuncio anuncioACrear;
+
+    classAnuncio utilidadesAnuncio;
+
 
     private Context context;
     private SharedPreferences shrdPrefs;
@@ -164,16 +179,6 @@ public class PaginaDispositivos extends Fragment implements TextChangeListener {
             }
         });
 
-        // abre popup crear anuncio
-        crearAnuncio = v.findViewById(R.id.dispositivo_hud2);
-        crearAnuncio.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                crearAvisoFragment dialogoCrearAviso = new crearAvisoFragment();
-                dialogoCrearAviso.show(getFragmentManager(), "Dialogo crear Anuncio");
-            }
-        });
-
         // Registra el receptor de difusión
         broadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -185,6 +190,28 @@ public class PaginaDispositivos extends Fragment implements TextChangeListener {
             }
         };
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(broadcastReceiver, new IntentFilter("actualizarTexto"));
+
+
+        //para la creacion de anuncio --------------------------------------
+
+        utilidadesAnuncio = new classAnuncio();
+
+        tituloAnuncio = v.findViewById(R.id.titleforrequest);
+        problemas = v.findViewById(R.id.problemforrequest);
+        contenidoAnuncio = v.findViewById(R.id.editTextDescripcion);
+
+
+        enviarAnuncio = v.findViewById(R.id.buttonrequest);
+        enviarAnuncio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                anuncioACrear= new POJOAnuncio(tituloAnuncio.getText().toString(), contenidoAnuncio.getText().toString(), problemas.getText().toString(), "No leido");
+                utilidadesAnuncio.crearYPublicarAnuncio(nombreDispositivo, anuncioACrear, getContext());
+
+                overlay2.setVisibility(View.GONE);
+                overlay_view2.setVisibility(View.GONE);
+            }
+        });
 
         return v;
     }
