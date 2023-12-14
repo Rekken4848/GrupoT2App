@@ -251,8 +251,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //SharedPreferences shrdPrefs = getPreferences(MODE_PRIVATE);
             //String valorAMostrar = shrdPrefs.getString("NombreDispositivo", "GTI-3A");
             //textoNombre.setText(valorAMostrar);
-            SharedPreferences shrdPrefs = getPreferences(MODE_PRIVATE);
+            shrdPrefs = getPreferences(MODE_PRIVATE);
             String nombreDispositivo = shrdPrefs.getString("NombreDispositivo", "");
+            Log.d("PRUEBA QR", "ES " + nombreDispositivo);
         /*SharedPreferences shrdPrefs;
                 String nombreDispositivo;
                 try {
@@ -313,6 +314,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //vamos a guardar este valor obtenido en la cache de la app
         guardarEnCache(nombreObtenido);
+
 
     } // ()
 

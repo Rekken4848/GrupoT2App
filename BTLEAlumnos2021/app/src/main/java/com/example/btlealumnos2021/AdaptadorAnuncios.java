@@ -43,7 +43,13 @@ public class AdaptadorAnuncios extends RecyclerView.Adapter<AdaptadorAnuncios.Vi
 
     @Override
     public int getItemCount() {
-        return listaAnuncios.size();
+        try{
+            int cant = listaAnuncios.size();
+            return cant;
+        } catch (Exception err){
+            Log.d("AdaptadorAnuncios", "No he podido obtener el tamaño o no hay anuncios que mirar");
+            return 0;
+        }
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

@@ -47,6 +47,9 @@ public class PaginaDispositivos extends Fragment implements TextChangeListener {
     ImageView ImagenEscanerQR;
     ImageView crearAnuncio;
 
+    TextView estadoDispositivo;
+
+    RecyclerView recyclerAnuncio;
 
     private Context context;
     private SharedPreferences shrdPrefs;
@@ -70,6 +73,8 @@ public class PaginaDispositivos extends Fragment implements TextChangeListener {
         dispositivo_hud2 = v.findViewById(R.id.dispositivo_hud2);
 
         exit2 = v.findViewById(R.id.exit2);
+
+        estadoDispositivo=v.findViewById(R.id.deviceState);
 
         exit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,11 +131,20 @@ public class PaginaDispositivos extends Fragment implements TextChangeListener {
         shrdPrefs = getActivity().getSharedPreferences("MainActivity", MODE_PRIVATE);
         String nombreDispositivo = shrdPrefs.getString("NombreDispositivo", "");
 
-        RecyclerView recyclerAnuncio = v.findViewById(R.id.recyclerView);
+        recyclerAnuncio = v.findViewById(R.id.recyclerView);
         recyclerAnuncio.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
 
         classanuncio = new classAnuncio();
-        classanuncio.recogerAnunciosDeServidorYMostrarRecycler(nombreDispositivo, recyclerAnuncio, context);
+
+        if(nombreDispositivo.equals("")){
+            //no hay ningun dispositivo guardado/asociado
+            estadoDispositivo.setText("No hay ningun dispositivo asociado \n Puedes registrar uno con el boton arriba a la derecha");
+        } else {
+            //hay dispositivo guardado en la app
+            estadoDispositivo.setText("Estado del dispositivo");
+
+            classanuncio.recogerAnunciosDeServidorYMostrarRecycler(nombreDispositivo, recyclerAnuncio, context);
+        }
 
         //recargar el recycler
         recargarecycler = v.findViewById(R.id.recargarRecyclerImage);
@@ -171,6 +185,7 @@ public class PaginaDispositivos extends Fragment implements TextChangeListener {
             }
         };
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(broadcastReceiver, new IntentFilter("actualizarTexto"));
+
         return v;
     }
 
@@ -188,6 +203,23 @@ public class PaginaDispositivos extends Fragment implements TextChangeListener {
         LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(broadcastReceiver);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        String nombreDispositivo = shrdPrefs.getString("NombreDispositivo", "");
+
+        if(nombreDispositivo.equals("")){
+            //no hay ningun dispositivo guardado/asociado
+            estadoDispositivo.setText("No hay ningun dispositivo asociado \n Puedes registrar uno con el boton arriba a la derecha");
+        } else {
+            //hay dispositivo guardado en la app
+            estadoDispositivo.setText("Estado del dispositivo");
+
+            classanuncio.recogerAnunciosDeServidorYMostrarRecycler(nombreDispositivo, recyclerAnuncio, context);
+        }
+
+    }
 
     // --------------------------------------------------------------
     // la respuesta a este intent se recogen en MainActivity por ser esa una actividad y esto un fragment
@@ -201,4 +233,5 @@ public class PaginaDispositivos extends Fragment implements TextChangeListener {
         //la respuesta del escaneo se obtiene en onActivityResult
 
     } // ()
+
 }
