@@ -123,7 +123,7 @@
             android:layout_height="46dp"
             android:src="@drawable/actualizar"
             app:layout_constraintBottom_toTopOf="@+id/recyclerView"
-            app:layout_constraintEnd_toStartOf="@+id/imageViewCrearAnuncio"
+            app:layout_constraintEnd_toStartOf="@+id/dispositivo_hud2"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

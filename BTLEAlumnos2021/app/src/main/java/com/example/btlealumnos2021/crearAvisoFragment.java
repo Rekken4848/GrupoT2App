@@ -61,7 +61,7 @@ public class crearAvisoFragment extends DialogFragment {
         utilidadesAnuncio = new classAnuncio();
 
         shrdPrefs = getActivity().getSharedPreferences("MainActivity", MODE_PRIVATE);
-        String nombreDispositivo = shrdPrefs.getString("NombreDispositivo", "GTI-3A");
+        String nombreDispositivo = shrdPrefs.getString("NombreDispositivo", "");
 
         tituloAnuncio = v.findViewById(R.id.titleforrequest);
         problemas = v.findViewById(R.id.problemforrequest);

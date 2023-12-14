@@ -252,7 +252,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //String valorAMostrar = shrdPrefs.getString("NombreDispositivo", "GTI-3A");
             //textoNombre.setText(valorAMostrar);
             SharedPreferences shrdPrefs = getPreferences(MODE_PRIVATE);
-            String nombreDispositivo = shrdPrefs.getString("NombreDispositivo", "GTI-3A");
+            String nombreDispositivo = shrdPrefs.getString("NombreDispositivo", "");
         /*SharedPreferences shrdPrefs;
                 String nombreDispositivo;
                 try {

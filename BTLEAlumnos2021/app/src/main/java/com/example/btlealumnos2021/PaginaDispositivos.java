@@ -124,7 +124,7 @@ public class PaginaDispositivos extends Fragment implements TextChangeListener {
         context = this.getContext();
 
         shrdPrefs = getActivity().getSharedPreferences("MainActivity", MODE_PRIVATE);
-        String nombreDispositivo = shrdPrefs.getString("NombreDispositivo", "GTI-3A");
+        String nombreDispositivo = shrdPrefs.getString("NombreDispositivo", "");
 
         RecyclerView recyclerAnuncio = v.findViewById(R.id.recyclerView);
         recyclerAnuncio.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
@@ -151,7 +151,7 @@ public class PaginaDispositivos extends Fragment implements TextChangeListener {
         });
 
         // abre popup crear anuncio
-        crearAnuncio = v.findViewById(R.id.imageViewCrearAnuncio);
+        crearAnuncio = v.findViewById(R.id.dispositivo_hud2);
         crearAnuncio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -41,7 +41,6 @@ public class ServicioReceptorBeacons extends Service {
         Toast.makeText(this,"Servicio creado",
                 Toast.LENGTH_SHORT).show();
 
-        //hay que modificar el primer valor de la siguiente linea si guardamos el valor del nommbre en otra actividad que no sea MainActivity, consultar funcion de guardado para ruta del archivo a buscar
         shrdPrefs = getSharedPreferences("MainActivity", MODE_PRIVATE);
 
         Timer timer= new Timer();
@@ -75,7 +74,7 @@ public class ServicioReceptorBeacons extends Service {
                 Toast.LENGTH_SHORT).show();*/
         MainActivity.BluetoothLeScannerWrapper scannerWrapper = (MainActivity.BluetoothLeScannerWrapper) intent.getSerializableExtra("escaner");
 
-        String nombreDispositivo = shrdPrefs.getString("NombreDispositivo", "GTI-3A");
+        String nombreDispositivo = shrdPrefs.getString("NombreDispositivo", "");
 
         elEscanner = MainActivity.BluetoothLeScannerWrapper.getBluetoothLeScanner();
         Log.d("Pasar dato", " Recibe el servicio: " + elEscanner.hashCode());

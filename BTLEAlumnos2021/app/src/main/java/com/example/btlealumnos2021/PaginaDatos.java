@@ -86,7 +86,7 @@ public class PaginaDatos extends Fragment {
                 Log.d("Shared preferences", "voy a recoger el shared");
                 try {
                     shrdPrefs = getActivity().getSharedPreferences("MainActivity", MODE_PRIVATE);
-                    String nombreDispositivo = shrdPrefs.getString("NombreDispositivo", "GTI-3A");
+                    String nombreDispositivo = shrdPrefs.getString("NombreDispositivo", "");
 
                     Log.d("Shared preferences", "he recogido correctamente el shared");
 
