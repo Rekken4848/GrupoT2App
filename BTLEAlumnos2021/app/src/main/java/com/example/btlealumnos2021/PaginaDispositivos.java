@@ -154,9 +154,11 @@ public class PaginaDispositivos extends Fragment implements TextChangeListener {
         if(nombreDispositivo.equals("")){
             //no hay ningun dispositivo guardado/asociado
             estadoDispositivo.setText("No hay ningun dispositivo asociado \n Puedes registrar uno con el boton arriba a la derecha");
+            estadoDispositivo.setTextColor(getResources().getColor(R.color.red));
         } else {
             //hay dispositivo guardado en la app
             estadoDispositivo.setText("Estado del dispositivo");
+            estadoDispositivo.setTextColor(getResources().getColor(R.color.black));
 
             classanuncio.recogerAnunciosDeServidorYMostrarRecycler(nombreDispositivo, recyclerAnuncio, context);
         }
@@ -239,9 +241,11 @@ public class PaginaDispositivos extends Fragment implements TextChangeListener {
         if(nombreDispositivo.equals("")){
             //no hay ningun dispositivo guardado/asociado
             estadoDispositivo.setText("No hay ningun dispositivo asociado \n Puedes registrar uno con el boton arriba a la derecha");
+            estadoDispositivo.setTextColor(getResources().getColor(R.color.red));
         } else {
             //hay dispositivo guardado en la app
             estadoDispositivo.setText("Estado del dispositivo");
+            estadoDispositivo.setTextColor(getResources().getColor(R.color.black));
 
             classanuncio.recogerAnunciosDeServidorYMostrarRecycler(nombreDispositivo, recyclerAnuncio, context);
         }
