@@ -39,7 +39,7 @@ import android.content.SharedPreferences;
 public class PaginaDatos extends Fragment {
     IPUnificada ipUnificada = new IPUnificada();
     TextView valorOzono;
-    TextView valorCO2;
+    TextView valorContaminacion;
     TextView valorTemperatura;
     private SharedPreferences shrdPrefs;
     private static final String ETIQUETA_LOG = ">>>>";
@@ -53,9 +53,9 @@ public class PaginaDatos extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_home, container, false);
-        
+
         valorOzono=v.findViewById(R.id.valorOzono);
-        valorCO2=v.findViewById(R.id.valorCO2);
+        valorContaminacion=v.findViewById(R.id.valorContaminacion);
         valorTemperatura=v.findViewById(R.id.valorTemperatura);
 
         webView = v.findViewById(R.id.adaptadorMapa);
@@ -118,10 +118,8 @@ public class PaginaDatos extends Fragment {
                                         List<POJOMedicion> listaMediciones = gson.fromJson(cuerpo, listType);
                                         float valorFinalTemp=0;
                                         float valorFinalOzono=0;
-                                        float valorFinalCO2=0;
                                         int contadorTemp=0;
                                         int contadorOzono=0;
-                                        int contadorCO2=0;
 
                                         for (POJOMedicion MedicionObjeto : listaMediciones) {
                                             System.out.println("ID: " + MedicionObjeto.getId());
@@ -143,11 +141,6 @@ public class PaginaDatos extends Fragment {
                                                     valorFinalOzono=valorFinalOzono+esteValor;
                                                     contadorOzono++;
                                                     break;
-
-                                                case 6: //caso CO2
-                                                    valorFinalCO2=valorFinalCO2+esteValor;
-                                                    contadorCO2++;
-                                                    break;
                                             }
                                         }
 
@@ -167,18 +160,9 @@ public class PaginaDatos extends Fragment {
                                             compararConMedidasOficiales(1, -999);
                                         }
 
-                                        if (contadorCO2!=0){
-                                            float valorMedioCO2 = valorFinalCO2/contadorCO2;
-                                            System.out.println("CO2" + valorMedioCO2);
-                                            compararConMedidasOficiales(6, valorMedioCO2);
-                                        } else{
-                                            compararConMedidasOficiales(6, -999);
-                                        }
-
                                     }catch (Exception err2){
                                         compararConMedidasOficiales(0, -999);
                                         compararConMedidasOficiales(1, -999);
-                                        compararConMedidasOficiales(6, -999);
                                         Log.e("PeticionarioEstimacion", "error al mostrar los datos");
                                     }
 
@@ -215,15 +199,6 @@ public class PaginaDatos extends Fragment {
                 }
                 break;
 
-            case 6: //caso CO2
-                if (valor < 500){
-                    mostrarValorEnHome(tipoValor, valor, 0);
-                } else if (valor < 1200) {
-                    mostrarValorEnHome(tipoValor, valor, 1);
-                } else{
-                    mostrarValorEnHome(tipoValor, valor, 2);
-                }
-                break;
         }
 
     } // ()
@@ -254,29 +229,24 @@ public class PaginaDatos extends Fragment {
                 } else if (gravedad == 0){ // cuando hay poca contaminacion
                     valorOzono.setText(valor + " µg/m3");
                     valorOzono.setTextColor(Color.GREEN);
+
+                    valorContaminacion.setText("Baja");
+                    valorContaminacion.setTextColor(Color.GREEN);
                 } else if (gravedad == 1) { //contaminacion moderada
                     valorOzono.setText(valor + " µg/m3");
                     valorOzono.setTextColor(Color.YELLOW);
+
+                    valorContaminacion.setText("Media");
+                    valorContaminacion.setTextColor(Color.YELLOW);
                 } else { //hay mucha contaminacion
                     valorOzono.setText(valor + " µg/m3");
                     valorOzono.setTextColor(Color.RED);
+
+                    valorContaminacion.setText("Alta");
+                    valorContaminacion.setTextColor(Color.RED);
                 }
                 break;
 
-            case 6: //caso CO2
-                if (valor == -999 || valor == -999.0){ //no tenemos datos de CO2
-                    valorCO2.setText("No info");
-                }else if (gravedad == 0){ // cuando hay poca contaminacion
-                    valorCO2.setText(valor + " ppm");
-                    valorCO2.setTextColor(Color.GREEN);
-                } else if (gravedad == 1) { //contaminacion moderada
-                    valorCO2.setText(valor + " ppm");
-                    valorCO2.setTextColor(Color.YELLOW);
-                } else { //hay mucha contaminacion
-                    valorCO2.setText(valor + " ppm");
-                    valorCO2.setTextColor(Color.RED);
-                }
-                break;
         }
 
     } // ()
