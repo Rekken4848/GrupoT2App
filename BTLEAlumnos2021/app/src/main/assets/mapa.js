@@ -74,7 +74,7 @@ function getClasificacion(valor) {
 
 function mostrarLeyendaYMarcadores(mymap) {
     // Poner ip
-    fetch('http://localhost:8080/medicionConTipoValorEntreFechasYDispositivo/2023-10-14 16:32:40/2023-10-16 16:32:40/PrueMapaDis', {
+    fetch('http://192.168.21.130:8080/medicionConTipoValorEntreFechasYDispositivo/2023-10-14 16:32:40/2023-10-16 16:32:40/PrueMapaDis', {
         method: "GET"
     }).then(function (respuesta) {
 
