@@ -102,6 +102,7 @@
             android:backgroundTint="#80CDB9"
             android:gravity="center"
             android:text="Enviar"
+            android:fontFamily="@font/robotobold"
             android:textAllCaps="false"
             android:textColorLink="#FFFFFF"></Button>
 

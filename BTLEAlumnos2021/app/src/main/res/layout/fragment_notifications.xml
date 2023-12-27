@@ -31,6 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Numero de Serie"
+            android:fontFamily="@font/robotobold"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -41,6 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Estado del dispositivo"
+            android:fontFamily="@font/robotoregular"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -53,6 +55,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:text="Dispositivos Conectados"
+        android:fontFamily="@font/robotoblack"
         android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/imageView6"
         app:layout_constraintStart_toStartOf="@+id/imageView6" />
@@ -135,6 +138,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:text="Peticiones"
+        android:fontFamily="@font/robotobolditalic"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/constraintLayout2" />
