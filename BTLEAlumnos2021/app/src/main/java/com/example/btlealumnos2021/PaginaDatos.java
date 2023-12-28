@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -46,7 +47,12 @@ public class PaginaDatos extends Fragment {
     TextView valorContaminacion;
     TextView valorTemperatura;
     RecyclerView recyclerEstimaciones;
+
+    ImageView flechaDer;
+    ImageView flechaIzq;
     Context contexto;
+    float razonPixeles;
+    private int recyclerPos;
     private SharedPreferences shrdPrefs;
     private static final String ETIQUETA_LOG = ">>>>";
     private WebView webView;
@@ -66,6 +72,42 @@ public class PaginaDatos extends Fragment {
         valorTemperatura=v.findViewById(R.id.valorTemperatura);*/
 
         recyclerEstimaciones=v.findViewById(R.id.recyclerViewEstimacion);
+
+        flechaDer=v.findViewById(R.id.flechaDer);
+        flechaIzq=v.findViewById(R.id.flechaIzq);
+        recyclerPos=0;
+
+        razonPixeles=getResources().getDisplayMetrics().density;
+
+        flechaDer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //recyclerPos contiene un numero entre 0 y 5 (incluidos) que representan que elemento del recycler se esta viendo mayoritariamente
+                //.computeHorizontalScrollOffset() obtiene en px cuanto se ha desplazado el recycler
+                //con getDisplayMetrics().density (razonPixeles) obtenemos la razon para calcular los px a dp
+                //se divide entre 338 por ser la longitud en dp de cada elemento del recycler
+                recyclerPos = Math.round(recyclerEstimaciones.computeHorizontalScrollOffset()/razonPixeles)/338;
+                if (recyclerPos==5){
+                    //si estamos en el limite nos movemos
+                    recyclerEstimaciones.smoothScrollBy(Math.round(338*razonPixeles), 0);
+                    return;
+                }
+                //nos movemos al elemento de al lado
+                recyclerEstimaciones.smoothScrollToPosition(recyclerPos+1);
+            }
+        });
+
+        flechaIzq.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recyclerPos = Math.round(recyclerEstimaciones.computeHorizontalScrollOffset()/razonPixeles)/338;
+                if (recyclerPos==0){
+                    recyclerEstimaciones.smoothScrollBy(Math.round(-338*razonPixeles), 0);
+                    return;
+                }
+                recyclerEstimaciones.smoothScrollToPosition(recyclerPos-1);
+            }
+        });
 
         contexto=this.getContext();
 

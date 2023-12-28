@@ -91,7 +91,7 @@
             android:layout_height="68dp">
 
             <ImageView
-                android:id="@+id/imageView17"
+                android:id="@+id/flechaIzq"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_marginStart="8dp"
@@ -102,17 +102,17 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewEstimacion"
-                android:layout_width="0dp"
+                android:layout_width="338dp"
                 android:layout_height="0dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/imageView18"
-                app:layout_constraintStart_toEndOf="@+id/imageView17"
+                app:layout_constraintEnd_toStartOf="@+id/flechaDer"
+                app:layout_constraintStart_toEndOf="@+id/flechaIzq"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                android:id="@+id/imageView18"
+                android:id="@+id/flechaDer"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_marginEnd="8dp"
