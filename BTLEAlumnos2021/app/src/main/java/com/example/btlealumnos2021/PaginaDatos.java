@@ -2,6 +2,7 @@ package com.example.btlealumnos2021;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -18,6 +19,8 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.gson.Gson;
@@ -28,6 +31,7 @@ import com.google.zxing.integration.android.IntentResult;
 import java.lang.reflect.Type;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -41,6 +45,8 @@ public class PaginaDatos extends Fragment {
     TextView valorOzono;
     TextView valorContaminacion;
     TextView valorTemperatura;
+    RecyclerView recyclerEstimaciones;
+    Context contexto;
     private SharedPreferences shrdPrefs;
     private static final String ETIQUETA_LOG = ">>>>";
     private WebView webView;
@@ -54,9 +60,14 @@ public class PaginaDatos extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_home, container, false);
 
+        /*
         valorOzono=v.findViewById(R.id.valorOzono);
         valorContaminacion=v.findViewById(R.id.valorContaminacion);
-        valorTemperatura=v.findViewById(R.id.valorTemperatura);
+        valorTemperatura=v.findViewById(R.id.valorTemperatura);*/
+
+        recyclerEstimaciones=v.findViewById(R.id.recyclerViewEstimacion);
+
+        contexto=this.getContext();
 
         webView = v.findViewById(R.id.adaptadorMapa);
         WebSettings webSettings = webView.getSettings();
@@ -83,12 +94,9 @@ public class PaginaDatos extends Fragment {
             public void run() {
                 PeticionarioREST elPeticionario = new PeticionarioREST();
 
-                Log.d("Shared preferences", "voy a recoger el shared");
                 try {
                     shrdPrefs = getActivity().getSharedPreferences("MainActivity", MODE_PRIVATE);
                     String nombreDispositivo = shrdPrefs.getString("NombreDispositivo", "");
-
-                    Log.d("Shared preferences", "he recogido correctamente el shared");
 
                     long fechaActualMilis = System.currentTimeMillis();
                     long fechaDesdeMilis = fechaActualMilis-86400000;
@@ -116,10 +124,16 @@ public class PaginaDatos extends Fragment {
                                         Type listType = new TypeToken<List<POJOMedicion>>(){}.getType();
                                         Gson gson = new Gson();
                                         List<POJOMedicion> listaMediciones = gson.fromJson(cuerpo, listType);
-                                        float valorFinalTemp=0;
                                         float valorFinalOzono=0;
-                                        int contadorTemp=0;
+                                        float valorFinalNO2=0;
+                                        float valorFinalSO2=0;
+                                        float valorFinalCO=0;
+                                        float valorFinalBenceno=0;
                                         int contadorOzono=0;
+                                        int contadorNO2=0;
+                                        int contadorSO2=0;
+                                        int contadorCO=0;
+                                        int contadorBenceno=0;
 
                                         for (POJOMedicion MedicionObjeto : listaMediciones) {
                                             System.out.println("ID: " + MedicionObjeto.getId());
@@ -132,38 +146,89 @@ public class PaginaDatos extends Fragment {
                                             float esteValor = MedicionObjeto.getValor();
 
                                             switch (MedicionObjeto.getTipo_valor_id()){
-                                                case 0: //caso temperatura
-                                                    valorFinalTemp=valorFinalTemp+esteValor;
-                                                    contadorTemp++;
-                                                    break;
 
                                                 case 1: //caso ozono
                                                     valorFinalOzono=valorFinalOzono+esteValor;
                                                     contadorOzono++;
                                                     break;
+                                                case 2: //caso NO2
+                                                    valorFinalNO2=valorFinalNO2+esteValor;
+                                                    contadorNO2++;
+                                                    break;
+
+                                                case 3: //caso SO2
+                                                    valorFinalSO2=valorFinalSO2+esteValor;
+                                                    contadorSO2++;
+                                                    break;
+                                                case 4: //caso CO
+                                                    valorFinalCO=valorFinalCO+esteValor;
+                                                    contadorCO++;
+                                                    break;
+
+                                                case 5: //caso benceno
+                                                    valorFinalBenceno=valorFinalBenceno+esteValor;
+                                                    contadorBenceno++;
+                                                    break;
                                             }
                                         }
 
-                                        if (contadorTemp!=0){
-                                            float valorMedioTemp = valorFinalTemp/contadorTemp;
-                                            System.out.println("Temperatura" + valorMedioTemp);
-                                            compararConMedidasOficiales(0, valorMedioTemp);
-                                        } else{
-                                            compararConMedidasOficiales(0, -999); //ponemos un valor imposible para decirle a la funcion que de este valor no tenemos mediciones
-                                        }
+                                        Float valorMedioOzono=0F;
+                                        Float valorMedioNO2=0F;
+                                        Float valorMedioSO2=0F;
+                                        Float valorMedioCO=0F;
+                                        Float valorMedioBenceno=0F;
+
 
                                         if (contadorOzono!=0){
-                                            float valorMedioOzono = valorFinalOzono/contadorOzono;
-                                            System.out.println("Ozono" + valorMedioOzono);
-                                            compararConMedidasOficiales(1, valorMedioOzono);
+                                            valorMedioOzono = valorFinalOzono/contadorOzono;
+                                            System.out.println("Ozono " + valorMedioOzono);
                                         } else{
-                                            compararConMedidasOficiales(1, -999);
+                                            valorMedioOzono=-99F;
                                         }
 
+                                        if (contadorNO2!=0){
+                                            valorMedioNO2 = valorFinalNO2/contadorNO2;
+                                            System.out.println("NO2 " + valorMedioNO2);
+                                        } else{
+                                            valorMedioNO2=-99F;
+                                        }
+
+                                        if (contadorSO2!=0){
+                                            valorMedioSO2 = valorFinalSO2/contadorSO2;
+                                            System.out.println("SO2 " + valorMedioSO2);
+                                        } else{
+                                            valorMedioSO2=-99F;
+                                        }
+
+                                        if (contadorCO!=0){
+                                            valorMedioCO = valorFinalCO/contadorCO;
+                                            System.out.println("CO " + valorMedioCO);
+                                        } else{
+                                            valorMedioCO=-99F;
+                                        }
+
+                                        if (contadorBenceno!=0){
+                                            valorMedioBenceno = valorFinalBenceno/contadorBenceno;
+                                            System.out.println("Benceno " + valorMedioBenceno);
+                                        } else{
+                                            valorMedioBenceno=-99F;
+                                        }
+
+                                        ArrayList<Float> arrayMedias = new ArrayList<Float>();
+                                        arrayMedias.add(0F);
+                                        arrayMedias.add(valorMedioOzono);
+                                        arrayMedias.add(valorMedioNO2);
+                                        arrayMedias.add(valorMedioSO2);
+                                        arrayMedias.add(valorMedioCO);
+                                        arrayMedias.add(valorMedioBenceno);
+
+                                        compararConMedidasOficiales(arrayMedias);
+
                                     }catch (Exception err2){
-                                        compararConMedidasOficiales(0, -999);
-                                        compararConMedidasOficiales(1, -999);
                                         Log.e("PeticionarioEstimacion", "error al mostrar los datos");
+                                        ArrayList<Float> arrayMedias = new ArrayList<Float>();
+
+                                        compararConMedidasOficiales(arrayMedias);
                                     }
 
                                 }
@@ -175,31 +240,115 @@ public class PaginaDatos extends Fragment {
                 }
             }
         }, 0,120000);
+
+        Context context = this.getContext();
+        recyclerEstimaciones.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+
         return v;
     }
 
     // --------------------------------------------------------------
-    // int tipoValor, float Valor --> compararConMedidasOficiales()
+    // ArrayList<Float> arrayMedias --> compararConMedidasOficiales()
     // --------------------------------------------------------------
-    public void compararConMedidasOficiales(int tipoValor, float valor){
+    public void compararConMedidasOficiales(ArrayList<Float> arrayMedias){
 
-        // el segundo int de la funcion mostrarValorEnHome indica la gravedad del dato{ 0=verde/ningun peligro 1=amarillo/ligeramente contaminado 2=rojo/alerta de contaminacion
-        switch (tipoValor){
-            case 0: //caso temperatura
-                mostrarValorEnHome(tipoValor, valor, 0);
-                break;
+        ArrayList<String> arrayGravedad = new ArrayList<String>();
 
-            case 1: //caso ozono
-                if (valor < 180){
-                    mostrarValorEnHome(tipoValor, valor, 0);
-                } else if (valor < 240) {
-                    mostrarValorEnHome(tipoValor, valor, 1);
-                } else{
-                    mostrarValorEnHome(tipoValor, valor, 2);
-                }
-                break;
-
+        if (arrayMedias.size()==0){
+            arrayMedias.add(-99F);
+            AdaptadorEstimacionCalidad adapter = new AdaptadorEstimacionCalidad(arrayMedias, arrayGravedad, contexto);
+            recyclerEstimaciones.setAdapter(adapter);
         }
+
+        int contadorBajos=0;
+        int contadorMedios=0;
+        int contadorAltos=0;
+
+        for (int i=0;i<arrayMedias.size();i++){
+            Float valor = arrayMedias.get(i);
+            switch (i){
+                case 0: //caso general
+                    arrayGravedad.add("Reservado General");
+                    break;
+
+                case 1: //caso ozono
+                    if (valor < 180){
+                        arrayGravedad.add("bajo");
+                        contadorBajos++;
+                    } else if (valor < 240) {
+                        arrayGravedad.add("medio");
+                        contadorMedios++;
+                    } else{
+                        arrayGravedad.add("alto");
+                        contadorAltos++;
+                    }
+                    break;
+
+                case 2: //caso NO2
+                    if (valor < 100){
+                        arrayGravedad.add("bajo");
+                        contadorBajos++;
+                    } else if (valor < 200) {
+                        arrayGravedad.add("medio");
+                        contadorMedios++;
+                    } else{
+                        arrayGravedad.add("alto");
+                        contadorAltos++;
+                    }
+                    break;
+
+                case 3: //caso SO2
+                    if (valor < 125){
+                        arrayGravedad.add("bajo");
+                        contadorBajos++;
+                    } else if (valor < 350) {
+                        arrayGravedad.add("medio");
+                        contadorMedios++;
+                    } else{
+                        arrayGravedad.add("alto");
+                        contadorAltos++;
+                    }
+                    break;
+
+                case 4: //caso CO
+                    if (valor < 5){
+                        arrayGravedad.add("bajo");
+                        contadorBajos++;
+                    } else if (valor < 10) {
+                        arrayGravedad.add("medio");
+                        contadorMedios++;
+                    } else{
+                        arrayGravedad.add("alto");
+                        contadorAltos++;
+                    }
+                    break;
+
+                case 5: //caso benceno
+                    if (valor < 2){
+                        arrayGravedad.add("bajo");
+                        contadorBajos++;
+                    } else if (valor < 5) {
+                        arrayGravedad.add("medio");
+                        contadorMedios++;
+                    } else{
+                        arrayGravedad.add("alto");
+                        contadorAltos++;
+                    }
+                    break;
+
+            }
+        }
+        
+        if (contadorBajos>=contadorMedios && contadorBajos>contadorAltos){
+            arrayGravedad.set(0, "bajo");
+        } else if (contadorMedios>contadorBajos && contadorMedios>=contadorAltos) {
+            arrayGravedad.set(0, "medio");
+        } else if (contadorAltos>=contadorBajos && contadorAltos>contadorMedios) {
+            arrayGravedad.set(0, "alto");
+        }
+
+        AdaptadorEstimacionCalidad adapter = new AdaptadorEstimacionCalidad(arrayMedias, arrayGravedad, contexto);
+        recyclerEstimaciones.setAdapter(adapter);
 
     } // ()
 
@@ -212,11 +361,11 @@ public class PaginaDatos extends Fragment {
         //gravedad 1 = hay contaminacion modedara (amarillo)
         //gravedad 2 = contaminacion alta o excesiva / alerta (rojo)
 
-        switch (tipoValor){
+        switch (tipoValor) {
             case 0: //caso temperatura
-                if (valor == -999 || valor == -999.0){
+                if (valor == -999 || valor == -999.0) {
                     valorTemperatura.setText("No info");
-                } else{
+                } else {
                     DecimalFormat df = new DecimalFormat("###.#");
                     valorTemperatura.setText(df.format(valor) + " ºC");
                 }
@@ -224,9 +373,9 @@ public class PaginaDatos extends Fragment {
                 break;
 
             case 1: //caso ozono
-                if (valor == -999 || valor == -999.0){ //no tenemos datos de ozono
+                if (valor == -999 || valor == -999.0) { //no tenemos datos de ozono
                     valorOzono.setText("No info");
-                } else if (gravedad == 0){ // cuando hay poca contaminacion
+                } else if (gravedad == 0) { // cuando hay poca contaminacion
                     valorOzono.setText(valor + " µg/m3");
                     valorOzono.setTextColor(Color.GREEN);
 
@@ -246,8 +395,11 @@ public class PaginaDatos extends Fragment {
                     valorContaminacion.setTextColor(Color.RED);
                 }
                 break;
-
         }
+//------------------------------------------------------------------------------------------
+
+        Context context = this.getContext();
+        recyclerEstimaciones.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
 
     } // ()
 
