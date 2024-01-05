@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import org.json.JSONException;
@@ -29,34 +30,35 @@ public class LoginActivity extends AppCompatActivity {
         boolean isLoggedIn = sharedPreferences.getBoolean(KEY_LOGGED_IN, false);
 
         if (isLoggedIn) {
-            // If user is already logged in, redirect to MainActivity or another screen
+            // Redirect to MainActivity or another screen
             Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(mainIntent);
             finish();
         } else {
-            // User is not logged in, display the login screen
+            // Display the login screen
             setContentView(R.layout.login);
 
             EditText editTextDNI = findViewById(R.id.dnilogin);
             EditText editTextCorreo = findViewById(R.id.correologin);
             EditText editTextCP = findViewById(R.id.cplogin);
             Button loginButton = findViewById(R.id.iniciarsesion);
+            Switch tandCSwitch = findViewById(R.id.tandc); // Find the switch
 
             loginButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (!tandCSwitch.isChecked()) {
+                        Toast.makeText(LoginActivity.this, "Please agree to the terms and conditions", Toast.LENGTH_SHORT).show();
+                        return; // Do not proceed if the switch is not checked
+                    }
+
                     String id = editTextDNI.getText().toString().trim();
                     String email = editTextCorreo.getText().toString().trim();
                     String postalcode = editTextCP.getText().toString().trim();
 
                     if (!id.isEmpty() && !email.isEmpty() && !postalcode.isEmpty()) {
-                        // Assuming login successful, set isLoggedIn to true in SharedPreferences
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.apply();
-
                         checkCredentialsAndLogin(id, email, postalcode);
                     } else {
-                        // Display fields are empty
                         Toast.makeText(LoginActivity.this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -64,7 +66,8 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void checkCredentialsAndLogin(String id, String email, String postalcode) { // 192.168.43.252
+
+    private void checkCredentialsAndLogin(String id, String email, String postalcode) {
         String urlPersona = ipunificada.getIpServidor() + "/persona/" + id;
         String urlDireccion = ipunificada.getIpServidor() + "/direccion/" + id;
 
@@ -86,23 +89,28 @@ public class LoginActivity extends AppCompatActivity {
                                     String correo = jsonObjectPersona.getString("correo");
                                     String cp = jsonObjectDireccion.getString("codigo_postal");
 
-                                    if (dni.equals(id) && email.equals(correo) && postalcode.equals(cp)) {
-                                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                                        editor.putBoolean(KEY_LOGGED_IN, true);
-                                        editor.apply();
+                                    if (dni.equals(id)) {
+                                        if (!email.equals(correo) || !postalcode.equals(cp)) {
+                                            // ID is correct but email or postal code is not, show toast
+                                            runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    Toast.makeText(LoginActivity.this, "Email or Postal Code is incorrect", Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                        } else {
+                                            // All credentials are correct
+                                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                                            editor.putBoolean(KEY_LOGGED_IN, true);
+                                            editor.apply();
 
-                                        Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
-                                        startActivity(mainIntent);
-                                        finish();
+                                            Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
+                                            startActivity(mainIntent);
+                                            finish();
+                                        }
+                                    } else {
+                                        // ID is incorrect, you can handle this case if needed
                                     }
-                                        // Credentials are incorrect, prompt user to re-enter credentials
-                                        /*runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                Toast.makeText(LoginActivity.this, "Invalid credentials", Toast.LENGTH_SHORT).show();
-                                            }
-                                        });*/
-
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -126,7 +134,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
-
 }
 
 

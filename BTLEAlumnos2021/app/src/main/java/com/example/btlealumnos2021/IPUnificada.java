@@ -4,6 +4,7 @@ public class IPUnificada {
 
     private String ipServidor;
 
+    //"192.168.21.130"
     public IPUnificada() {
         this.ipServidor = "http://" + "192.168.21.130" + ":8080";
     }
