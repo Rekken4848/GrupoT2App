@@ -255,6 +255,9 @@ public class PaginaDispositivos extends Fragment implements TextChangeListener {
     // --------------------------------------------------------------
     // la respuesta a este intent se recogen en MainActivity por ser esa una actividad y esto un fragment
     // --------------------------------------------------------------
+    // --------------------------------------------------------------
+    // abrirEscaneoQr()
+    // --------------------------------------------------------------
     public void abrirEscaneoQr(){
         Log.d("<<<>>>", " boton vincular sensor con qr Pulsado");
         Log.d("<<<>>>", " Empezamos escaneo de qr con camara");
