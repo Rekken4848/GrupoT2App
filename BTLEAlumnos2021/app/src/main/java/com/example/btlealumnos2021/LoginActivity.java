@@ -66,7 +66,9 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-
+    // --------------------------------------------------------------
+    // Texto, Texto, Texto --> checkCredentialsAndLogin()
+    // --------------------------------------------------------------
     private void checkCredentialsAndLogin(String id, String email, String postalcode) {
         String urlPersona = ipunificada.getIpServidor() + "/persona/" + id;
         String urlDireccion = ipunificada.getIpServidor() + "/direccion/" + id;

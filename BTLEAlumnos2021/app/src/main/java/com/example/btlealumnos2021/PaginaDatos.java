@@ -290,7 +290,7 @@ public class PaginaDatos extends Fragment {
     }
 
     // --------------------------------------------------------------
-    // ArrayList<Float> arrayMedias --> compararConMedidasOficiales()
+    // <R> --> compararConMedidasOficiales()
     // --------------------------------------------------------------
     public void compararConMedidasOficiales(ArrayList<Float> arrayMedias){
 
@@ -395,7 +395,7 @@ public class PaginaDatos extends Fragment {
     } // ()
 
     // --------------------------------------------------------------
-    // int tipoValor, float Valor --> compararConMedidasOficiales()
+    // N, R, N --> mostrarValorEnHome()
     // --------------------------------------------------------------
     public void mostrarValorEnHome(int tipoValor, float valor, int gravedad){
 
