@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -65,6 +66,10 @@ public class PaginaDispositivos extends Fragment implements TextChangeListener {
 
     classAnuncio utilidadesAnuncio;
 
+    IPUnificada ipUnificada = new IPUnificada();
+
+    TextView pruebaTamanoRed;
+
 
     private Context context;
     private SharedPreferences shrdPrefs;
@@ -90,6 +95,29 @@ public class PaginaDispositivos extends Fragment implements TextChangeListener {
         exit2 = v.findViewById(R.id.exit2);
 
         estadoDispositivo=v.findViewById(R.id.deviceState);
+
+        //para prueba comprobacion red -----------------------------------------------------------------
+
+        pruebaTamanoRed=v.findViewById(R.id.textView);
+        pruebaTamanoRed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                PeticionarioREST elPeticionario5 = new PeticionarioREST();
+                elPeticionario5.hacerPeticionREST("POST",  ipUnificada.getIpServidor() + "/medicion",
+                        "{ \"valor\": \"" + 100.0 + "\", \"tipo_valor_id\": \"" + 1 + "\", \"fecha\": \"" + "2024-01-08 14:32:40" + "\", \"lugar\": \"" + "38.990372, -0.157928" + "\"}",
+                        new PeticionarioREST.RespuestaREST () {
+                            @Override
+                            public void callback(int codigo, String cuerpo) {
+
+                                //aqui se ha añadido correctamente, avisar de alguna manera al usuario
+                                Toast.makeText(context, "Prueba tamaño red. Medicion mandada", Toast.LENGTH_SHORT).show();
+
+                            }
+                        }
+                );
+            }
+        });
 
         exit.setOnClickListener(new View.OnClickListener() {
             @Override
