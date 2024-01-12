@@ -18,7 +18,7 @@
             margin: 0;
         }
 
-        #zonaMapa {
+        #zonaMapa2 {
             height: 100%;
             width: 100%;
         }
@@ -26,8 +26,20 @@
     </head>
     <body>
     <h1>Mapa de mediciones</h1>
-    <div id="zonaMapa"></div>
+    <div id="zonaMapa2"></div>
     <script src="mapa.js"></script>
+    <script>
+		const [fechaHoyFuera, fechaAyerFuera] = getFechaHoy()
+
+		fechaInicio = fechaAyerFuera;
+		fechaFin = fechaHoyFuera;
+
+		generarYGenerarMapa(fechaInicio, fechaFin, "Admin");
+		setInterval(function () {
+			// Aquí llamas a tu función con los argumentos necesarios
+			generarYGenerarMapa(fechaInicio, fechaFin, "Admin");
+		}, 50000);
+	</script>
 
     </body>
 </html>

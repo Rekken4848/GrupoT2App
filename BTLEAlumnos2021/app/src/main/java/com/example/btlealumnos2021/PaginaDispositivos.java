@@ -105,7 +105,7 @@ public class PaginaDispositivos extends Fragment implements TextChangeListener {
 
                 PeticionarioREST elPeticionario5 = new PeticionarioREST();
                 elPeticionario5.hacerPeticionREST("POST",  ipUnificada.getIpServidor() + "/medicion",
-                        "{ \"valor\": \"" + 100.0 + "\", \"tipo_valor_id\": \"" + 1 + "\", \"fecha\": \"" + "2024-01-08 14:32:40" + "\", \"lugar\": \"" + "38.990372, -0.157928" + "\"}",
+                        "{ \"valor\": \"" + 400.0 + "\", \"tipo_valor_id\": \"" + 1 + "\", \"fecha\": \"" + "2024-01-08 14:32:40" + "\", \"lugar\": \"" + "38.990372, -0.157928" + "\"}",
                         new PeticionarioREST.RespuestaREST () {
                             @Override
                             public void callback(int codigo, String cuerpo) {

@@ -38,7 +38,7 @@ public class PaginaWeb extends Fragment {
         webSettings.setDisplayZoomControls(false);
 
         // Cargar la página web con el mapa Leaflet
-        webView.loadUrl("http://192.168.1.21:8080/");
+        webView.loadUrl("http://192.168.43.252:8080/");
         webView.setWebChromeClient(new WebChromeClient());
         return v;
     }
