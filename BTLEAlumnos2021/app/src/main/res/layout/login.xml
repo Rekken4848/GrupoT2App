@@ -98,8 +98,7 @@
         android:layout_width="160dp"
         android:layout_height="36dp"
         android:layout_marginTop="24dp"
-        android:background="@drawable/fondo_botones"
-        android:backgroundTint="#80CDB9"
+        android:backgroundTint="#674AE8"
         android:fontFamily="@font/robotobold"
         android:gravity="center"
         android:text="Iniciar Sesión"
@@ -108,7 +107,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout"/>
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
     <TextView
         android:id="@+id/textView12"
